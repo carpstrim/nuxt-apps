@@ -100,6 +100,10 @@ def get_photo_mozaic_im(basePath, subPaths,pixel=50):
     resized_file_rgb = []
 
     print(" --- downloading photos ")
+    limit_sub_paths = int((width/pixel)*(height/pixel)*1.1)
+    if(len(subPaths)>limit_sub_paths):
+        print('sub paths is too much. limit is {}. but sub paths are {}'.format(limit_sub_paths,len(subPaths)))
+        subPaths = subPaths[0:limit_sub_paths]
     with ThreadPoolExecutor(max_workers=30) as executor:
         sub_ims = executor.map(url2im, subPaths)
     sub_ims = list(sub_ims)
@@ -163,12 +167,14 @@ def photomosaic(request):
     pixel = data.get('pixel')
     print(url_base)
     im = get_photo_mozaic_im(url_base,url_photos,pixel)
-    return im2dataurl(im)
+    dataurl= im2dataurl(im)
+    print('photomosaiced',dataurl)
+    return dataurl
 
 if __name__ == "__main__":
     print("getting photo urls from google photos")
     unsplash = "https://source.unsplash.com/500x500/?nature,"
-    photoUrls = [unsplash+str(i) for i in range(100)];
+    photoUrls = [unsplash+str(i) for i in range(1000)];
     photoUrls.append("/2Q==")
     baseUrls = "https://welove.expedia.co.jp/wp-content/uploads/2016/12/shutterstock_346551977_2-810x606.jpg"
     print("generating photo mozaic")
