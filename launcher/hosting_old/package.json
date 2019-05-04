@@ -1,0 +1,30 @@
+{
+  "name": "goconjapan-admin",
+  "version": "1.0.0",
+  "description": "administer of goconjapan",
+  "author": "kunimasa",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "deploy": "npm run build && firebase deploy --only hosting"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/pwa": "^2.6.0",
+    "cross-env": "^5.2.0",
+    "lodash": "^4.17.11",
+    "nuxt": "^2.4.0",
+    "vuetify": "^1.5.0",
+    "vuetify-loader": "^1.2.0"
+  },
+  "devDependencies": {
+    "node-sass": "^4.12.0",
+    "nodemon": "^1.18.9",
+    "sass-loader": "^7.1.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2"
+  }
+}
