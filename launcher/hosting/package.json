@@ -1,5 +1,5 @@
 {
-  "name": "goconjapan-admin",
+  "name": "thous_and_apps",
   "version": "1.0.0",
   "description": "administer of goconjapan",
   "author": "kunimasa",
@@ -14,11 +14,10 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^2.6.0",
+    "@nuxtjs/vuetify": "^0.5.5",
     "cross-env": "^5.2.0",
     "lodash": "^4.17.11",
-    "nuxt": "^2.4.0",
-    "vuetify": "^1.5.0",
-    "vuetify-loader": "^1.2.0"
+    "nuxt": "^2.4.0"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",

@@ -1,7 +1,5 @@
 const pkg = require('./package')
 
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
-
 module.exports = {
   mode: 'spa',
 
@@ -40,12 +38,12 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: ['~/assets/style/app.styl'],
+  //  css: ['~/assets/style/app.styl'],
 
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/vuetify', '@/plugins/firebase', '@/plugins/components'],
+  plugins: ['@/plugins/firebase', '@/plugins/components'],
 
   /*
    ** Nuxt.js modules
@@ -53,7 +51,8 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/vuetify'
   ],
   manifest: {
     name: 'goconjapan admin',
@@ -70,18 +69,18 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    transpile: ['vuetify/lib'],
-    plugins: [new VuetifyLoaderPlugin()],
-
-    loaders: {
-      stylus: {
-        import: ['~assets/style/variables.styl']
-      }
-    },
-
+    //    transpile: ['vuetify/lib'],
+    //    plugins: [new VuetifyLoaderPlugin()],
+    /*
+        loaders: {
+          stylus: {
+            import: ['~assets/style/variables.styl']
+          }
+        },
+    */
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) { }
   }
 }

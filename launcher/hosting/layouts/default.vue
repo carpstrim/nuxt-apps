@@ -1,43 +1,22 @@
 <template>
   <v-app>
-    <v-toolbar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-toolbar-side-icon
-        @click="drawer = !drawer"
-        v-show="notLoginPage"
-      />
-      <v-spacer />
-      <v-autocomplete
-        prepend-icon="search"
-        :items="searchIdx"
-        :search-input.sync="search"
-        clearable
-        v-model="val"
-      ></v-autocomplete>
-    </v-toolbar>
-    <v-content>
-      <nuxt />
-    </v-content>
-    <v-footer
-      :fixed="fixed"
-      app
-      style="justify-content: flex-end"
-    >
-      <span style="padding:1vw">&copy; 2019 hands-on-campus.com</span>
-    </v-footer>
-    <top-drawer
-      :open="drawer"
-      :links="links"
-    />
-
+    <top-drawer :open="drawer" :links="links"/>
+    <top-bar :drawerFnc="()=>drawer=!drawer"/>
+    <top-view/>
   </v-app>
 </template>
 
 <script>
+import TopDrawer from "@/components/TopDrawer";
+import TopBar from "@/components/TopBar";
+import TopView from "@/components/TopView";
+
 export default {
+  components: {
+    TopDrawer,
+    TopBar,
+    TopView
+  },
   computed: {
     notLoginPage() {
       return this.$route.name !== "login";
@@ -47,57 +26,39 @@ export default {
     return {
       search: null,
       val: null,
-      clipped: false,
-      drawer: false,
+      drawer: true,
       fixed: false,
       searchIdx: [],
-      items: [
-        {
-          icon: "apps",
-          title: "top",
-          to: "/"
-        },
-        {
-          icon: "supervisor_account",
-          title: "Members",
-          to: "/members"
-        },
-        {
-          icon: "class",
-          title: "Events",
-          to: "/events"
-        }
-      ],
       links: [
         { header: "Main" },
         {
-          to: "/brains",
-          icon: "mdi-cube-outline",
-          text: "Brain"
+          to: "/apps",
+          icon: "apps",
+          text: "Apps"
         },
         {
-          to: "/detections",
-          icon: "mdi-eye-check",
-          text: "Detection"
+          to: "/contact",
+          icon: "chat",
+          text: "Contact"
         },
         { divider: true },
         { header: "Advanced" },
         {
-          to: "/automations",
-          icon: "mdi-robot",
-          text: "Automation"
+          to: "/specials",
+          icon: "star",
+          text: "Specials"
         },
         { divider: true },
-        { header: "Settings" },
+        { header: "Credits" },
         {
           to: "/profile",
-          icon: "mdi-account",
-          text: "Profile"
+          icon: "supervisor_account",
+          text: "About us"
         },
         {
-          to: "/settings",
-          icon: "mdi-settings",
-          text: "More Settings"
+          to: "/thanks",
+          icon: "favorite",
+          text: "Thanks"
         }
       ],
       miniVariant: false
@@ -112,4 +73,5 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/assets/style/index.scss";
 </style>

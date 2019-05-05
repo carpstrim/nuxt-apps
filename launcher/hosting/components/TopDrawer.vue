@@ -9,18 +9,11 @@
     :mobile-break-point="breakPoint"
     width="260"
   >
-    <v-img
-      :src="image"
-      height="100%"
-    >
-      <v-layout
-        class="fill-height"
-        column
-        tag="v-list"
-      >
-        <v-list-tile avatar>
+    <v-img :src="image" height="100%">
+      <v-layout class="fill-height" column tag="v-list">
+        <v-list-tile avatar to="/">
           <v-list-tile-avatar>
-            <v-img :src="logo" />
+            <v-img :src="logo"/>
           </v-list-tile-avatar>
           <v-list-tile-title class="title">Thous&Apps</v-list-tile-title>
         </v-list-tile>
@@ -37,12 +30,9 @@
             <v-list-tile-action>
               <v-icon>{{ link.icon }}</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title v-text="link.text" />
+            <v-list-tile-title v-text="link.text"/>
           </v-list-tile>
-          <v-divider
-            v-else-if="link.divider"
-            :key="i"
-          />
+          <v-divider v-else-if="link.divider" :key="i"/>
           <v-subheader
             v-else-if="link.header"
             :key="link.header"
@@ -50,11 +40,7 @@
           >{{ link.header }}</v-subheader>
         </template>
 
-        <v-list-tile
-          active-class="primary"
-          class="v-list-item v-list__tile--buy"
-          to="/upgrade"
-        >
+        <v-list-tile active-class="primary" class="v-list-item v-list__tile--buy" to="/upgrade">
           <v-list-tile-action>
             <v-icon>mdi-star-box</v-icon>
           </v-list-tile-action>
@@ -95,19 +81,12 @@ export default {
       default: false
     }
   },
-  computed: {
-    list() {
-      return this.$store.state.firebase.projects.map(project => ({
-        text: project.name,
-        value: project._id
-      }));
-    }
-  }
+  computed: {}
 };
 </script>
 
 <style lang="scss">
-@import "@/assets/style/index.scss";
+//@import "@/assets/style/index.scss";
 
 #app-drawer {
   .v-list__tile {
