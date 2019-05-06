@@ -55,7 +55,7 @@ module.exports = {
     '@nuxtjs/vuetify'
   ],
   manifest: {
-    name: 'goconjapan admin',
+    name: 'Thous&Apps',
     lang: 'ja'
   },
   /*

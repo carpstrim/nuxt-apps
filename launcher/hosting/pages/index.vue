@@ -1,33 +1,25 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
+  <v-layout column justify-center align-center>
+    <v-flex xs12 sm8 md6>
       <v-card>
-        <v-card-title class="headline">Welcome to GCJ Admin Page</v-card-title>
+        <v-card-title class="headline">Welcome to Thous&Apps Page</v-card-title>
         <v-card-text>
-          <p>This page is for admin users of GCJ. Please click(tap) on members or events from left bar / following links.</p>
-          <p>To see all guests in GCJ, click <nuxt-link
-            to="/members"
-          >HERE</nuxt-link>.</p>
-          <p>To see all events in GCJ, click <nuxt-link
-            to="/events"
-          >HERE</nuxt-link>.</p>
-          <p>Thank you for operating GCJ and I look forward to bringing more exciting features in the future.</p>
+          <p>This page is for platform of our awesome apps.</p>
+          <p>
+            To see all apps, click
+            <nuxt-link to="/apps">HERE</nuxt-link>.
+          </p>
+          <p>
+            To see any infomations about us, click
+            <nuxt-link to="/aboutus">HERE</nuxt-link>.
+          </p>
           <div class="text-xs-right">
-            <em><small>&mdash; Shutaro Kunimasa</small></em>
+            <em>
+              <small>&mdash; Hands-on-Campus.com</small>
+            </em>
           </div>
           <hr class="my-3">
-          <a
-            href="https://gitlab.com/kunimasandbox/macaron"
-            target="_blank"
-          >Developer's Documentation</a>
+          <a href="https://app-senbonknock.com/" target="_blank">Developer's Blog</a>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -35,7 +27,5 @@
 </template>
 
 <script>
-
-export default {
-}
+export default {};
 </script>

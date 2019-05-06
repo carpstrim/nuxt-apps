@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <top-drawer :open="drawer" :links="links"/>
-    <top-bar :drawerFnc="()=>drawer=!drawer"/>
+    <top-drawer ref="drawer" :links="links"/>
+    <top-bar :drawerFnc="switchDrawer"/>
     <top-view/>
   </v-app>
 </template>
@@ -37,11 +37,12 @@ export default {
           text: "Apps"
         },
         {
-          to: "/contact",
-          icon: "chat",
-          text: "Contact"
+          href: "https://app-senbonknock.com/",
+          icon: "book",
+          text: "Blog"
         },
         { divider: true },
+        /*
         { header: "Advanced" },
         {
           to: "/specials",
@@ -49,9 +50,10 @@ export default {
           text: "Specials"
         },
         { divider: true },
+        */
         { header: "Credits" },
         {
-          to: "/profile",
+          to: "/aboutus",
           icon: "supervisor_account",
           text: "About us"
         },
@@ -67,6 +69,11 @@ export default {
   watch: {
     search(val) {
       console.log(val);
+    }
+  },
+  methods: {
+    switchDrawer() {
+      this.$refs.drawer.switch();
     }
   }
 };

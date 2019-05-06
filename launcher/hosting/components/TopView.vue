@@ -7,7 +7,7 @@
       <v-footer dark inset fixed app style="justify-content: flex-end">
         <span style="padding:1vw">
           <strong>
-            &copy; 2019 -
+            &copy; 2018 -
             Hands-on-Campus.com
           </strong>
         </span>

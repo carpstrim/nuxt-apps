@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     id="app-drawer"
-    v-model="open"
+    v-model="drawer"
     app
     dark
     floating
@@ -20,9 +20,11 @@
 
         <template v-for="(link, i) in links">
           <v-list-tile
-            v-if="link.to"
+            v-if="link.to || link.href"
             :key="link.text"
             :to="link.to"
+            :href="link.href"
+            :target="(link.href)? '_blank':''"
             active-class="info"
             avatar
             class="v-list-item"
@@ -39,13 +41,6 @@
             class="grey--text text--lighten-4"
           >{{ link.header }}</v-subheader>
         </template>
-
-        <v-list-tile active-class="primary" class="v-list-item v-list__tile--buy" to="/upgrade">
-          <v-list-tile-action>
-            <v-icon>mdi-star-box</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title class="font-weight-light">Upgrade Your Plan</v-list-tile-title>
-        </v-list-tile>
       </v-layout>
     </v-img>
   </v-navigation-drawer>
@@ -59,7 +54,8 @@ export default {
   data: () => ({
     dialog: false,
     image: sidebarImage,
-    logo: Logo
+    logo: Logo,
+    drawer: false
   }),
   props: {
     breakPoint: {
@@ -75,13 +71,17 @@ export default {
       default: () => {
         console.log("oops");
       }
-    },
-    open: {
-      type: Boolean,
-      default: false
     }
   },
-  computed: {}
+  mounted() {
+    this.drawer = screen.width > this.breakPoint ? true : false;
+  },
+  computed: {},
+  methods: {
+    switch() {
+      this.drawer = !this.drawer;
+    }
+  }
 };
 </script>
 

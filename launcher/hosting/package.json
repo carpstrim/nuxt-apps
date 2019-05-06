@@ -1,7 +1,7 @@
 {
   "name": "thous_and_apps",
   "version": "1.0.0",
-  "description": "administer of goconjapan",
+  "description": "weekly developer",
   "author": "kunimasa",
   "private": true,
   "scripts": {
@@ -17,7 +17,8 @@
     "@nuxtjs/vuetify": "^0.5.5",
     "cross-env": "^5.2.0",
     "lodash": "^4.17.11",
-    "nuxt": "^2.4.0"
+    "nuxt": "^2.4.0",
+    "vue-infinite-loading": "^2.4.4"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",
