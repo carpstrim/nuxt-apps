@@ -6,34 +6,73 @@
     </div>
     <v-container>
       <v-layout wrap>
-        <v-flex xs12 sm6 class="img-box">
+        <v-flex
+          xs12
+          sm6
+          class="img-box"
+        >
           <div class="img-box-inside">
-            <div class="box-text" @click="addBaseImg">
-              <v-icon>add</v-icon>1.Click to add base image
+            <div
+              class="box-text"
+              v-if="!baseUrl"
+            >
+              <upload-btn
+                :fileChangedCallback="uploadFile('baseUrl','single')"
+                color="primary"
+                title="1.Upload Base-Image"
+              ></upload-btn>
+            </div>
+            <v-img
+              :src="baseUrl"
+              v-else
+              @click.right="baseUrl=``"
+              class="base-img"
+              aspect-ratio="1"
+            ></v-img>
+          </div>
+        </v-flex>
+        <v-flex
+          xs12
+          sm6
+          class="img-box"
+        >
+          <div class="img-box-inside">
+            <div class="box-text">
+              <v-btn
+                color="info"
+                :disabled="!subUrls.length>0 || !baseUrl"
+              >3.Generate Photomosaic</v-btn>
             </div>
           </div>
         </v-flex>
-        <v-flex xs12 sm6 class="img-box">
-          <div class="img-box-inside">
-            <div class="box-text" @click="addBaseImg">
-              <v-btn color="info">3.Generate Photomosaic</v-btn>
-            </div>
-          </div>
-        </v-flex>
-        <v-flex xs12 class="img-box">
+        <v-flex
+          xs12
+          class="img-box"
+        >
           <upload-btn
-            :fileChangedCallback="uploadFile"
+            :fileChangedCallback="uploadFile('subUrls','multi')"
             color="info"
             title="2.Upload Sub-Image"
             multiple
           ></upload-btn>
         </v-flex>
-        <v-flex xs12 class="img-box">{{dataUrls.length}}枚 (最大 {{limitSubImg}}枚まで可能)</v-flex>
+        <v-flex
+          xs12
+          class="img-box"
+        >{{subUrls.length}}枚 (最大 {{limitSubImg}}枚まで可能)</v-flex>
       </v-layout>
       <v-layout wrap>
-        <v-flex xs2 v-for="(dataUrl,i) in dataUrls" :key="i">
+        <v-flex
+          xs2
+          v-for="(subUrl,i) in subUrls"
+          :key="i"
+        >
           <v-card class="sub-img">
-            <v-img :src="dataUrl" aspect-ratio="1"/>
+            <v-img
+              :src="subUrl"
+              aspect-ratio="1"
+              @click.right="subUrls.splice(i,1)"
+            />
           </v-card>
         </v-flex>
       </v-layout>
@@ -45,28 +84,38 @@
 export default {
   data() {
     return {
-      dataUrls: []
+      subUrls: [],
+      baseUrl: ""
     };
   },
   computed: {
     limitSubImg() {
-      return this.dataUrls.length + 10;
+      return this.subUrls.length + 10;
     }
   },
   methods: {
     addBaseImg() {
       window.alert("hoge");
     },
-    async uploadFile(files) {
-      console.log({ files });
-      for (let i = 0; i < files.length; i++) {
-        console.log({ file: files[i] });
-        const reader = new FileReader();
-        reader.onload = e => {
-          this.dataUrls.push(e.target.result);
-        };
-        reader.readAsDataURL(files[i]);
-      }
+    uploadFile(key) {
+      return async files => {
+        console.log({ files, len: files.length });
+        if (!files) return;
+        let isSingle = false;
+        if (!files.length) {
+          files = { length: 1, "0": files };
+          isSingle = true;
+        }
+        for (let i = 0; i < files.length; i++) {
+          if (files[i].type.indexOf("image") === -1) continue;
+          const reader = new FileReader();
+          reader.onload = e => {
+            if (!isSingle) this[key].push(e.target.result);
+            if (isSingle) this[key] = e.target.result;
+          };
+          reader.readAsDataURL(files[i]);
+        }
+      };
     }
   }
 };
@@ -102,5 +151,8 @@ export default {
 
 .sub-img {
   margin: 1vmin;
+}
+.base-img {
+  width: 100%;
 }
 </style>

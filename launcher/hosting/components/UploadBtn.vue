@@ -5,7 +5,9 @@
       :id="id"
       type="file"
       :name="name"
+      :value="value"
       :accept="accept"
+      @click="value=null"
       v-on:change="fileChanged"
       :multiple="multiple"
       hidden
@@ -115,16 +117,16 @@ export default {
       type: String
     },
     uniqueId: {
-      default: false,
+      default: true,
       type: Boolean
     }
   },
   data() {
-    return { loading_: false };
+    return { loading_: false, value: null };
   },
   computed: {
     id() {
-      return this.uniqueId ? `${this._uid}uploadFile` : "uploadFile";
+      return this.uniqueId ? Math.random() : "uploadFile";
     },
     classes() {
       const classes = {
@@ -151,6 +153,9 @@ export default {
     }
   },
   methods: {
+    log(e) {
+      console.log(e);
+    },
     click() {
       document.getElementById(this.id).click();
     },
