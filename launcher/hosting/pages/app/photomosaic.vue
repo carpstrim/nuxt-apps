@@ -87,7 +87,7 @@ export default {
           Authorization: "hogehoge"
         }
       });
-      console.log(this.pmUrl)
+      console.log(this.pmUrl);
     },
     uploadFile(key) {
       return async files => {
