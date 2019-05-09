@@ -15,7 +15,7 @@
         </v-flex>
         <v-flex xs12 sm6 class="img-box">
           <div class="img-box-inside">
-            <div class="box-text" @click="addBaseImg">
+            <div class="box-text" @click="genPhotomosaic">
               <v-btn color="info">3.Generate Photomosaic</v-btn>
             </div>
           </div>
@@ -67,6 +67,20 @@ export default {
         };
         reader.readAsDataURL(files[i]);
       }
+    },
+    async genPhotomosaic() {
+      const url =
+        "https://us-central1-hands-on-campus-apps.cloudfunctions.net/photomosaic";
+      const data = {
+        url_photos: this.dataUrls,
+        url_base: urlBase
+      };
+
+      const dataUrl = await this.$axios.post(url, data, {
+        headers: {
+          Authorization: "hogehoge"
+        }
+      });
     }
   }
 };
