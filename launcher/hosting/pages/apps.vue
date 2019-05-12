@@ -85,7 +85,7 @@ export default {
       loading: true,
       projects: [  //アプリ作ったらここにデータ追加
         {
-          name: "フォトモザイク生成ツール",
+          name: "フォトモザイク生成ツールだよ",
           description:
             "ベースとなる画像ファイルと、フォトモザイクのピースとなるサブ画像複数をアップロードして、フォトモザイクを簡単に作れるアプリです",
           urlThumbnail: require("@/static/icon_origin.png"),
