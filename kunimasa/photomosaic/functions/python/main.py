@@ -156,12 +156,25 @@ def get_photo_mozaic_im(basePath, subPaths,pixel=50):
 
     return im
 
-
+import flask
+import json
 def photomosaic(request):
     token = request.headers.get('Authorization')
     data = request.get_json()
-    if(token!='hogehoge'): return "invalid authorization"
-    if(not("url_base" in data and "url_photos" in data)): return "url_base and url_photos are required in payload"
+    print('response data',request.method,data,request.json,request.data,[request.headers])
+    def res(data):
+        headers={
+            "Access-Control-Allow-Origin" : "*",
+            "Cache-Control" : "public,max-age=300",
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Headers":"Content-Type,Authorization,Access-Control-Allow-Origin"
+        }
+        print(data,headers)
+        return (json.dumps(data),headers)
+
+    if(token!='hogehoge'): return res(["invalid authorization",token])
+    if(not data): return res('post data is none')
+    if(not("url_base" in data and "url_photos" in data)): return res(["url_base and url_photos are required in payload"])
     url_base = data["url_base"]
     url_photos = data["url_photos"]
     pixel = data.get('pixel')
@@ -169,7 +182,9 @@ def photomosaic(request):
     im = get_photo_mozaic_im(url_base,url_photos,pixel)
     dataurl= im2dataurl(im)
     print('photomosaiced',dataurl)
-    return dataurl
+    return res(dataurl)
+
+
 
 if __name__ == "__main__":
     print("getting photo urls from google photos")
