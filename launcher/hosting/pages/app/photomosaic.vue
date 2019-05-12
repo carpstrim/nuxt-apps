@@ -14,18 +14,18 @@
           <div class="img-box-inside">
             <div
               class="box-text"
-              v-if="!baseUrl"
+              v-if="!baseImg.url"
             >
               <upload-btn
-                :fileChangedCallback="uploadFile('baseUrl',true)"
+                :fileChangedCallback="uploadFile('baseImg',true)"
                 color="primary"
                 title="1.Upload Base-Image"
               ></upload-btn>
             </div>
             <v-img
-              :src="baseUrl"
+              :src="baseImg.url"
               v-else
-              @click.right="baseUrl=``"
+              @dblclick="baseImg={}"
               class="base-img"
               aspect-ratio="1"
             ></v-img>
@@ -43,15 +43,15 @@
             >
               <v-btn
                 color="info"
-                :disabled="!subUrls.length>0 || !baseUrl"
+                :disabled="!subImgs.length>0 || !baseImg.url"
                 @click="genPhotomosaic"
-                :loading="loadPM"
+                :loading="loading.pm"
               >3.Generate Photomosaic</v-btn>
             </div>
             <v-img
               :src="pmUrl"
               v-else
-              @click.right="pmUrl=``"
+              @dblclick="pmUrl=``"
               class="base-img"
               aspect-ratio="1"
             ></v-img>
@@ -63,7 +63,7 @@
           class="img-box"
         >
           <upload-btn
-            :fileChangedCallback="uploadFile('subUrls')"
+            :fileChangedCallback="uploadFile('subImgs')"
             color="info"
             title="2.Upload Sub-Image"
             multiple
@@ -72,50 +72,74 @@
         <v-flex
           xs12
           class="img-box"
-        >{{subUrls.length}}枚 (最大 {{limitSubImg}}枚まで可能)</v-flex>
+        >{{subImgs.length}}枚/{{totalSubImgSize}} (最大 {{limitSubImg}}枚まで可能)</v-flex>
       </v-layout>
       <v-layout wrap>
         <v-flex
           xs2
-          v-for="(subUrl,i) in subUrls"
+          v-for="(subImg,i) in subImgs"
           :key="i"
         >
           <v-card class="sub-img">
             <v-img
-              :src="subUrl"
+              :src="subImg.url"
               aspect-ratio="1"
-              @click.right="subUrls.splice(i,1)"
+              @dblclick="subImgs.splice(i,1)"
             />
           </v-card>
         </v-flex>
       </v-layout>
     </v-container>
+
+    <v-dialog
+      :v-model="loading.base||loading.sub||loading.pm"
+      width="80vw"
+    >
+      hoge!{{loading}}
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
-      subUrls: [],
-      baseUrl: "",
+      subImgs: [],
+      baseImg: {},
       pmUrl: "",
-      loadPM: false,
+      loading: {
+        pm: false,
+        base: false,
+        sub: false
+      },
       limitPhotos: 0,
-      baseWidth: 0,
-      baseHeight: 0
+      subPixel: 50,
+      basePixelMax: 2000
     };
   },
   computed: {
     limitSubImg() {
       const rate = Math.max(
-        2400 / Math.min(this.baseWidth, this.baseHeight),
+        2400 / Math.min(this.baseImg.width, this.baseImg.height),
         1
       );
-      const fixH = this.baseHeight * rate;
-      const fixW = this.baseWidth * rate;
+      const fixH = this.baseImg.height * rate;
+      const fixW = this.baseImg.width * rate;
       return Math.ceil((fixH / 50) * (fixW / 50) * 1.1) || 0;
+    },
+    totalSubImgSize() {
+      const size = this.subImgs.reduce((p, c) => p + c.size, 0);
+      const units = ["B", "KB", "MB", "GB", "TB"];
+      const unitIdx = Math.floor((String(size).length - 1) / 3);
+      const unit = units[unitIdx];
+      const sizeUnited =
+        Math.round((size / Math.pow(1000, unitIdx)) * 100) / 100;
+      return sizeUnited + unit;
+    }
+  },
+  watch: {
+    loading(val) {
+      console.log({ val });
     }
   },
   methods: {
@@ -123,12 +147,13 @@ export default {
       window.alert("hoge");
     },
     async genPhotomosaic() {
-      this.loadPM = true;
+      this.loading.pm = true;
       const url =
         "https://us-central1-hands-on-campus-apps.cloudfunctions.net/photomosaic";
       const data = {
-        url_photos: this.subUrls,
-        url_base: this.baseUrl
+        url_photos: this.subImgs.map(subImg => subImg.url),
+        url_base: this.baseImg.url,
+        pixel: this.subPixel
       };
 
       this.pmUrl = await this.$axios
@@ -138,11 +163,13 @@ export default {
           }
         })
         .catch(window.alert);
-      this.loadPM = false;
+      this.loading.pm = false;
     },
     uploadFile(key, isBase) {
       return async files => {
-        console.log({ files, len: files.length });
+        const keyLoading = isBase ? "base" : "sub";
+        this.loading[key] = true;
+        console.log({ files, len: files.length, loading: this.loading });
         if (!files) return;
         let isSingle = false;
         if (!files.length) {
@@ -156,17 +183,40 @@ export default {
           reader.onload = ({ target: { result } }) => {
             image.src = result;
             image.onload = () => {
-              1;
-              if (!isBase) return;
-              console.log({ w: image.naturalWidth, h: image.naturalHeight });
-              this.baseWidth = image.naturalWidth;
-              this.baseHeight = image.naturalHeight;
+              // resize
+              const { naturalWidth, naturalHeight } = image;
+              console.log({ naturalWidth, naturalHeight });
+              let targetW, targetH;
+              if (!isBase) {
+                targetW = this.subPixel;
+                targetH = this.subPixel;
+              } else {
+                const rate =
+                  this.basePixelMax / Math.max(naturalWidth, naturalHeight);
+                targetW = naturalWidth * rate;
+                targetH = naturalHeight * rate;
+              }
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d");
+              canvas.width = targetW;
+              canvas.height = targetH;
+              ctx.drawImage(image, 0, 0, targetW, targetH);
+              result = canvas.toDataURL();
+              const img = {
+                url: result,
+                size: result.length * 2,
+                width: targetW,
+                height: targetH
+              };
+              if (!isSingle) this[key].push(img);
+              if (isSingle) this[key] = img;
+              console.log({ uploaded: img });
             };
-            if (!isSingle) this[key].push(result);
-            if (isSingle) this[key] = result;
           };
           reader.readAsDataURL(files[i]);
         }
+        this.loading[keyLoading] = false;
+        console.log({ files, len: files.length, loading: this.loading });
       };
     }
   }
