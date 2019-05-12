@@ -6,20 +6,13 @@
     </div>
     <v-container>
       <v-layout wrap>
-        <v-flex
-          xs12
-          sm6
-          class="img-box"
-        >
+        <v-flex xs12 sm6 class="img-box">
           <div class="img-box-inside">
-            <div
-              class="box-text"
-              v-if="!baseImg.url"
-            >
+            <div class="box-text" v-if="!baseImg.url">
               <upload-btn
                 :fileChangedCallback="uploadFile('baseImg',true)"
-                color="primary"
-                title="1.Upload Base-Image"
+                color="info"
+                title="1.ベース画像"
               ></upload-btn>
             </div>
             <v-img
@@ -31,72 +24,51 @@
             ></v-img>
           </div>
         </v-flex>
-        <v-flex
-          xs12
-          sm6
-          class="img-box"
-        >
+        <v-flex xs12 sm6 class="img-box">
           <div class="img-box-inside">
-            <div
-              class="box-text"
-              v-if="!pmUrl"
-            >
+            <div class="box-text" v-if="!pmUrl">
               <v-btn
-                color="info"
+                color="primary"
                 :disabled="!subImgs.length>0 || !baseImg.url"
                 @click="genPhotomosaic"
-                :loading="loading.pm"
-              >3.Generate Photomosaic</v-btn>
+                :loading="loading"
+              >3.フォトモザイク生成</v-btn>
             </div>
-            <v-img
-              :src="pmUrl"
-              v-else
-              @dblclick="pmUrl=``"
-              class="base-img"
-              aspect-ratio="1"
-            ></v-img>
-
+            <v-img :src="pmUrl" v-else @dblclick="pmUrl=``" class="base-img" aspect-ratio="1"></v-img>
           </div>
         </v-flex>
-        <v-flex
-          xs12
-          class="img-box"
-        >
+        <v-flex xs12 class="img-box hmargin">
           <upload-btn
             :fileChangedCallback="uploadFile('subImgs')"
             color="info"
-            title="2.Upload Sub-Image"
+            title="2.パーツ画像"
+            :disabled="subImgs.length>500 || loading"
             multiple
           ></upload-btn>
         </v-flex>
-        <v-flex
-          xs12
-          class="img-box"
-        >{{subImgs.length}}枚/{{totalSubImgSize}} (最大 {{limitSubImg}}枚まで可能)</v-flex>
+        <v-flex xs12 class="img-box">パーツ画像は50x50に圧縮されます</v-flex>
+        <v-flex xs12 class="img-box">{{subImgs.length}}枚/{{totalSubImgSize}} (最大 500枚まで)</v-flex>
       </v-layout>
       <v-layout wrap>
-        <v-flex
-          xs2
-          v-for="(subImg,i) in subImgs"
-          :key="i"
-        >
+        <v-flex xs2 v-for="(subImg,i) in subImgs.slice(0,500)" :key="i">
           <v-card class="sub-img">
-            <v-img
-              :src="subImg.url"
-              aspect-ratio="1"
-              @dblclick="subImgs.splice(i,1)"
-            />
+            <v-img :src="subImg.url" aspect-ratio="1" @dblclick="subImgs.splice(i,1)"/>
           </v-card>
         </v-flex>
       </v-layout>
     </v-container>
 
-    <v-dialog
-      :v-model="loading.base||loading.sub||loading.pm"
-      width="80vw"
-    >
-      hoge!{{loading}}
-    </v-dialog>
+    <div class="text-xs-center">
+      <v-dialog v-model="loading" persistent width="80vw">
+        <v-card color="primary" dark>
+          <v-card-text>
+            <p>処理中...</p>
+            <p>{{loadingText}}</p>
+            <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </div>
   </div>
 </template>
 
@@ -107,14 +79,12 @@ export default {
       subImgs: [],
       baseImg: {},
       pmUrl: "",
-      loading: {
-        pm: false,
-        base: false,
-        sub: false
-      },
+      loadingSub: false,
+      loading: false,
       limitPhotos: 0,
       subPixel: 50,
-      basePixelMax: 2000
+      basePixelMax: 2000,
+      loadingText: "画像アップロード中..."
     };
   },
   computed: {
@@ -139,7 +109,13 @@ export default {
   },
   watch: {
     loading(val) {
-      console.log({ val });
+      this.loadingText = "画像アップロード中...";
+      if (val) {
+        const vm = this;
+        setTimeout(() => {
+          vm.loadingText = "画像計算中.処理には40秒ほどかかります...";
+        }, 5000);
+      }
     }
   },
   methods: {
@@ -147,7 +123,7 @@ export default {
       window.alert("hoge");
     },
     async genPhotomosaic() {
-      this.loading.pm = true;
+      this.loading = true;
       const url =
         "https://us-central1-hands-on-campus-apps.cloudfunctions.net/photomosaic";
       const data = {
@@ -163,20 +139,20 @@ export default {
           }
         })
         .catch(window.alert);
-      this.loading.pm = false;
+      this.loading = false;
     },
     uploadFile(key, isBase) {
       return async files => {
-        const keyLoading = isBase ? "base" : "sub";
-        this.loading[key] = true;
-        console.log({ files, len: files.length, loading: this.loading });
+        this.loading = true;
         if (!files) return;
         let isSingle = false;
         if (!files.length) {
           files = { length: 1, "0": files };
           isSingle = true;
         }
+        let loadcnt = 0;
         for (let i = 0; i < files.length; i++) {
+          const filesLen = files.length;
           if (files[i].type.indexOf("image") === -1) continue;
           const reader = new FileReader();
           const image = new Image();
@@ -211,12 +187,12 @@ export default {
               if (!isSingle) this[key].push(img);
               if (isSingle) this[key] = img;
               console.log({ uploaded: img });
+              loadcnt += 1;
+              if (loadcnt >= filesLen) this.loading = false;
             };
           };
           reader.readAsDataURL(files[i]);
         }
-        this.loading[keyLoading] = false;
-        console.log({ files, len: files.length, loading: this.loading });
       };
     }
   }
@@ -228,6 +204,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.hmargin {
   margin: 2vh 0;
 }
 .img-box-inside {

@@ -7,10 +7,7 @@
       </div>
 
       <div>
-        <transition-group
-          class="projects"
-          name="projects"
-        >
+        <transition-group class="projects" name="projects">
           <div
             class="project img-size"
             :key="project._createdAt"
@@ -35,35 +32,22 @@
         </infinite-loading>
       </div>
     </div>
-    <v-dialog
-      v-model="dialog"
-      fullscreen
-    >
-      <div style="background-color:rgba(0,0,0,0.8)">
-        <v-img
-          :src="targetThumbnailUrl"
-          :lazy-src="targetThumbnailUrl"
-          @click="closeDialog"
-          @load="loaded"
-          height="100vh"
-          contain
-        >
-          <template>
-            <v-layout
-              fill-height
-              align-center
-              justify-center
-              ma-0
-            >
-              <v-progress-circular
-                indeterminate
-                color="grey lighten-5"
-                v-show="loading"
-                size="100"
-              ></v-progress-circular>
-            </v-layout>
-          </template>
-        </v-img>
+    <v-dialog v-model="dialog" scrollable>
+      <div class="dialog--inside">
+        <div class="app--name">{{targetProject.name}}</div>
+        <br>
+        <div class="app--description">{{targetProject.description}}</div>
+        <div class="img">
+          <img :src="targetProject.urlThumbnail">
+        </div>
+        <v-btn color="info" v-if="targetProject.toApp" :to="targetProject.toApp" round>アプリ</v-btn>
+        <v-btn
+          color="white"
+          v-if="targetProject.toBlog"
+          :href="targetProject.toBlog"
+          target="_blank"
+          outline
+        >説明</v-btn>
       </div>
     </v-dialog>
   </div>
@@ -80,34 +64,27 @@ export default {
   data() {
     return {
       dialog: false,
-      targetImageUrl: "",
-      targetThumbnailUrl: "",
-      loading: true,
       projects: [
         //アプリ作ったらここにデータ追加
         {
           name: "フォトモザイクジェネレーター",
           description:
             "ベースとなる画像ファイルと、フォトモザイクのピースとなるサブ画像複数をアップロードして、フォトモザイクを簡単に作れるアプリです",
-          urlThumbnail: require("@/static/icon_origin.png"),
+          urlThumbnail: require("@/static/thumb/photomosaic.png"),
           _createdAt: "2019-05-12",
           toApp: "/app/photomosaic",
-          toBlog: "https://app-senbonknock.com/hello-world/"
+          toBlog: "https://app-senbonknock.com/phomosaic/"
         }
       ],
-      limitProjects: 20
+      limitProjects: 20,
+      targetProject: {}
     };
   },
   computed: {},
   methods: {
-    openOriginal({ urlThumbnail }) {
-      this.targetImageUrl = urlThumbnail;
-      this.targetThumbnailUrl = urlThumbnail;
+    openOriginal(project) {
+      this.targetProject = project;
       this.dialog = true;
-      this.loading = true;
-    },
-    loaded() {
-      this.loading = false;
     },
     closeDialog() {
       this.dialog = false;
@@ -237,5 +214,28 @@ body {
   border-top-right-radius: 3px;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
+}
+
+.dialog--inside {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  padding: 5vh 5vh;
+}
+.dialog--inside img {
+  width: 60vw;
+  height: 50vh;
+  margin: 2vh;
+  object-fit: cover;
+}
+.app--name {
+  font-size: 3vh;
+}
+.app--description {
+  font-size: 2vh;
 }
 </style>
