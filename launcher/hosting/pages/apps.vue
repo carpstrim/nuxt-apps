@@ -68,7 +68,7 @@ export default {
       targetImageUrl: "",
       targetThumbnailUrl: "",
       loading: true,
-      projects: [
+      projects: [  //アプリ作ったらここにデータ追加
         {
           name: "",
           description: "",
