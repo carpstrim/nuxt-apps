@@ -7,7 +7,10 @@
       </div>
 
       <div>
-        <transition-group class="projects" name="projects">
+        <transition-group
+          class="projects"
+          name="projects"
+        >
           <div
             class="project img-size"
             :key="project._createdAt"
@@ -32,7 +35,10 @@
         </infinite-loading>
       </div>
     </div>
-    <v-dialog v-model="dialog" fullscreen>
+    <v-dialog
+      v-model="dialog"
+      fullscreen
+    >
       <div style="background-color:rgba(0,0,0,0.8)">
         <v-img
           :src="targetThumbnailUrl"
@@ -43,8 +49,18 @@
           contain
         >
           <template>
-            <v-layout fill-height align-center justify-center ma-0>
-              <v-progress-circular indeterminate color="grey lighten-5" v-show="loading" size="100"></v-progress-circular>
+            <v-layout
+              fill-height
+              align-center
+              justify-center
+              ma-0
+            >
+              <v-progress-circular
+                indeterminate
+                color="grey lighten-5"
+                v-show="loading"
+                size="100"
+              ></v-progress-circular>
             </v-layout>
           </template>
         </v-img>
@@ -54,7 +70,6 @@
 </template>
 
 <script>
-import defaultLog from "@/static/icon_origin.png";
 import InfiniteLoading from "vue-infinite-loading";
 export default {
   components: {
@@ -70,12 +85,13 @@ export default {
       loading: true,
       projects: [  //アプリ作ったらここにデータ追加
         {
-          name: "",
-          description: "",
-          urlThumbnail: defaultLog,
-          _createdAt: "2019-05-06",
-          toApp: "",
-          toBlog: ""
+          name: "フォトモザイク生成ツール",
+          description:
+            "ベースとなる画像ファイルと、フォトモザイクのピースとなるサブ画像複数をアップロードして、フォトモザイクを簡単に作れるアプリです",
+          urlThumbnail: require("@/static/icon_origin.png"),
+          _createdAt: "2019-05-12",
+          toApp: "/app/photomosaic",
+          toBlog: "https://app-senbonknock.com/hello-world/"
         }
       ],
       limitProjects: 20
