@@ -17,8 +17,14 @@ def url2im(url):
         print(e)
         return None
 
-def resize(im, zoom_ratio_y, zoom_ratio_x):
-    return im.resize((int(zoom_ratio_x), int(zoom_ratio_y)))
+def resize(im, resize_x, resize_y):
+    size_x,size_y = im.size
+    if abs(size_x-resize_x) < abs(size_y-resize_y):
+        ratio_resize = float(resize_x)/size_x
+    else:
+        ratio_resize = float(resize_y)/size_y
+
+    return im.resize((int(size_x*ratio_resize), int(size_y*ratio_resize)))
 
 def get_roi(im, sy, ey, sx, ex):
     roi = im.crop((sx, sy, ex, ey))
@@ -31,6 +37,7 @@ def create_dot_im(rgb,height,width):
 base_path = "https://welove.expedia.co.jp/wp-content/uploads/2016/12/shutterstock_346551977_2-810x606.jpg"
 
 def make_dot_im(img_url,unique_colors=8):
+  if(unique_colors is None): unique_colors=8
   im = url2im(img_url)  # Image.open(basePath)
   im = im.convert('RGB')
 
@@ -40,16 +47,18 @@ def make_dot_im(img_url,unique_colors=8):
   h = 5 #int(height / div_num_h)
   w = 5 #int(width / div_num_w)
 
-  re_im = resize(im,300,300);
-  base_rgb_array = np.array(re_im);
+  im = resize(im,300,300);
+  base_rgb_array = np.array(im);
   re_w,re_h,_ = base_rgb_array.shape;
   base_rgb_array = base_rgb_array.reshape([re_h*re_w,3])
 
+  print('kmeans start')
   clusters = KMeans(n_clusters=unique_colors,n_jobs=-1).fit_predict(base_rgb_array);
+  print('kmeans end')
   colors = np.array([base_rgb_array[clusters==i].mean(0) for i in range(unique_colors)])
-
+  print('colors gotten')
   sub_ims = [create_dot_im(color,h,w) for color in colors];
-
+  print('create dots')
   # replace base image with near-color dots
   for sy in range(0, height-1, h):
       for sx in range(0, width-1, w):
@@ -57,7 +66,7 @@ def make_dot_im(img_url,unique_colors=8):
           base_rgb = np.array(roi).mean(0).mean(0)
           idx = np.argmin(np.sum(abs(colors - base_rgb), axis=1))
           im.paste(sub_ims[idx], (sx, sy))
-
+  print('return dotted im')
   # image return
   return im
 
@@ -79,9 +88,6 @@ def im2dataurl(im, content_type='image/jpeg'):
 import flask
 import json
 def dotmaker(request):
-    token = request.headers.get('Authorization')
-    data = request.get_json()
-    print('response data',request.method,data,request.json,request.data,[request.headers])
     def res(data):
         headers={
             "Access-Control-Allow-Origin" : "*",
@@ -92,12 +98,18 @@ def dotmaker(request):
         print(data,headers)
         return (json.dumps(data),headers)
 
+    token = request.headers.get('Authorization')
     if(token!='hogehoge'): return res(["invalid authorization",token])
+
+    data = request.get_json()
+    print('response data',request.method,data,request.json,request.data,[request.headers])
     if(not data): return res('post data is none')
     if(not("url_img" in data)): return res(["url_img is required in payload"])
+
     url_img = data["url_img"]
     unique_colors = data.get('unique_colors')
-    print(url_img)
+
+    print('dotization start',url_img)
     im = make_dot_im(url_img,unique_colors)
     dataurl= im2dataurl(im)
     print('dotized',dataurl)
