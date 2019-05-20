@@ -26,17 +26,42 @@
             </v-slider>
           </div>
         </v-flex>
-        <v-flex xs12 sm6 class="img-box">
+        <v-flex
+          xs12
+          sm6
+          class="img-box"
+        >
           <div class="img-box-inside">
-            <div class="box-text" v-if="!baseImg">
-              <upload-btn :fileChangedCallback="uploadFile()" color="info" title="1.ベース画像"></upload-btn>
+            <div
+              class="box-text"
+              v-if="!baseImg"
+            >
+              <upload-btn
+                :fileChangedCallback="uploadFile()"
+                color="info"
+                title="1.ベース画像"
+              ></upload-btn>
             </div>
-            <v-img :src="baseImg" v-else @dblclick="baseImg=''" class="base-img" aspect-ratio="1"></v-img>
+            <v-img
+              :src="baseImg"
+              v-else
+              @dblclick="baseImg=''"
+              class="base-img"
+              aspect-ratio="1"
+            ></v-img>
+            <v-subheader>画像は自動的に300pxほどに圧縮されます</v-subheader>
           </div>
         </v-flex>
-        <v-flex xs12 sm6 class="img-box">
+        <v-flex
+          xs12
+          sm6
+          class="img-box"
+        >
           <div class="img-box-inside">
-            <div class="box-text" v-if="!dotUrl">
+            <div
+              class="box-text"
+              v-if="!dotUrl"
+            >
               <v-btn
                 color="primary"
                 :disabled="!baseImg"
@@ -44,19 +69,36 @@
                 :loading="loading"
               >2.ドット画像生成</v-btn>
             </div>
-            <v-img :src="dotUrl" v-else @dblclick="dotUrl=``" class="base-img" aspect-ratio="1"></v-img>
+            <v-img
+              :src="dotUrl"
+              v-else
+              @dblclick="dotUrl=``"
+              class="base-img"
+              aspect-ratio="1"
+            ></v-img>
           </div>
         </v-flex>
       </v-layout>
     </v-container>
 
     <div class="text-xs-center">
-      <v-dialog v-model="loading" persistent width="80vw">
-        <v-card color="primary" dark>
+      <v-dialog
+        v-model="loading"
+        persistent
+        width="80vw"
+      >
+        <v-card
+          color="primary"
+          dark
+        >
           <v-card-text>
-            <p>処理中...</p>
+            <p>処理中...{{loadingTime}}秒</p>
             <p>{{loadingText}}</p>
-            <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -72,24 +114,38 @@ export default {
       dotUrl: "",
       loading: false,
       ucolorIdx: 2,
-      ucolorLabels: ["2", "4", "8", "16", "32", "64"],
-      basePixelMax: 500,
-      loadingText: "画像アップロード中..."
+      ucolorLabels: ["2", "4", "8", "16"],
+      basePixelMax: 300,
+      loadingTime: 0,
+      loadingInterval: null
     };
   },
   computed: {
     ucolors() {
       return this.ucolorLabels[this.ucolorIdx] | 0;
+    },
+    loadingText() {
+      return this.loadingTime < 5
+        ? "画像アップロード中"
+        : `画像計算中.処理には1分ほどかかります...`;
+      // 2 -> 6s
+      // 4 -> 8s
+      // 8 -> 12s
+      // 16 -> 40s
+      // 32 -> 180s
+      // 64 -> 410s
     }
   },
   watch: {
     loading(val) {
-      this.loadingText = "画像アップロード中...";
+      const vm = this;
       if (val) {
-        const vm = this;
-        setTimeout(() => {
-          vm.loadingText = "画像計算中.処理には40秒ほどかかります...";
-        }, 5000);
+        vm.loadingInterval = setInterval(() => {
+          vm.loadingTime += 1;
+        }, 1000);
+      } else {
+        vm.loadingTime = 0;
+        clearInterval(vm.loadingInterval);
       }
     }
   },
@@ -189,7 +245,7 @@ export default {
 }
 
 .pannel {
-  width: 85vw;
+  width: 90%;
   margin: 5vw auto;
 }
 </style>

@@ -7,7 +7,10 @@
       </div>
 
       <div>
-        <transition-group class="projects" name="projects">
+        <transition-group
+          class="projects"
+          name="projects"
+        >
           <div
             class="project img-size"
             :key="project._createdAt"
@@ -32,7 +35,10 @@
         </infinite-loading>
       </div>
     </div>
-    <v-dialog v-model="dialog" scrollable>
+    <v-dialog
+      v-model="dialog"
+      scrollable
+    >
       <div class="dialog--inside">
         <div class="app--name">{{targetProject.name}}</div>
         <br>
@@ -40,7 +46,12 @@
         <div class="img">
           <img :src="targetProject.urlThumbnail">
         </div>
-        <v-btn color="info" v-if="targetProject.toApp" :to="targetProject.toApp" round>アプリ</v-btn>
+        <v-btn
+          color="info"
+          v-if="targetProject.toApp"
+          :to="targetProject.toApp"
+          round
+        >アプリ</v-btn>
         <v-btn
           color="white"
           v-if="targetProject.toBlog"
@@ -74,6 +85,14 @@ export default {
           _createdAt: "2019-05-12",
           toApp: "/app/photomosaic",
           toBlog: "https://app-senbonknock.com/phomosaic/"
+        },
+        {
+          name: "ドット画像メーカー",
+          description: "画像ファイルをドット絵っぽく低画質に落とすアプリです",
+          urlThumbnail: require("@/static/thumb/dotmaker.png"),
+          _createdAt: "2019-05-21",
+          toApp: "/app/dotmaker",
+          toBlog: "https://app-senbonknock.com/dotmaker/"
         }
       ],
       limitProjects: 20,
