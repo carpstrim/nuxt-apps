@@ -19,6 +19,7 @@
     "cross-env": "^5.2.0",
     "lodash": "^4.17.11",
     "nuxt": "^2.4.0",
+    "vue-ctk-date-time-picker": "^2.1.1",
     "vue-infinite-loading": "^2.4.4"
   },
   "devDependencies": {
