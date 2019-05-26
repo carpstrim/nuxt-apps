@@ -104,7 +104,7 @@ export default {
     loading: false,
     clipboard: null,
     snackbar: false,
-    urlList: []
+    urls: []
   }),
   mounted() {
     if (this.clipboard) return;
@@ -112,7 +112,16 @@ export default {
       this.clipboard = e.clipboardData;
     });
   },
-  computed: {},
+  computed: {
+    urlList: {
+      get() {
+        return this.urls.filter((url, i, U) => U.indexOf(url) === i);
+      },
+      set(val) {
+        if (val.length === 0) this.urls = [];
+      }
+    }
+  },
   methods: {
     search() {
       this.query = this.keyword;
@@ -131,31 +140,28 @@ export default {
     keyword(val) {
       clearTimeout(this.timeoutId);
       if (this.query === val) return;
+      this.loading = true;
       if (!val) {
         this.query = "";
+        this.loading = false;
       } else {
         this.timeoutId = setTimeout(() => {
           this.query = val;
+          this.loading = false;
         }, 1000);
       }
     },
     async query(val) {
       this.urlList = [];
-      this.loading = true;
-      let urls = [];
+      this.urls = [];
       if (val) {
         const endpoint = "https://source.unsplash.com/featured?";
-        await Promise.all(
-          [...Array(30)].map(async (_, i) => {
-            const response = await this.$axios.get(
-              `${endpoint}${this.query},${Math.random()}${i}`
-            );
-            urls.push(response.request.responseURL);
-          })
-        );
+        [...Array(30)].map(async (_, i) => {
+          const postUrl = `${endpoint}${this.query},${Math.random()}${i}`;
+          const response = await this.$axios.get(postUrl);
+          this.urls.push(response.request.responseURL);
+        });
       }
-      this.urlList = urls.filter((url, i, U) => U.indexOf(url) === i);
-      this.loading = false;
     }
   }
 };

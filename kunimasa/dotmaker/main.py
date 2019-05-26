@@ -33,9 +33,6 @@ def get_roi(im, sy, ey, sx, ex):
 def create_dot_im(rgb,height,width):
     return Image.fromarray(np.uint8(np.tile(rgb,(height,width,1))))
 
-
-base_path = "https://welove.expedia.co.jp/wp-content/uploads/2016/12/shutterstock_346551977_2-810x606.jpg"
-
 def make_dot_im(img_url,unique_colors=8):
   if(unique_colors is None): unique_colors=8
   im = url2im(img_url)  # Image.open(basePath)
