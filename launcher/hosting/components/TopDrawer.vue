@@ -9,11 +9,21 @@
     :mobile-break-point="breakPoint"
     width="260"
   >
-    <v-img :src="image" height="100%">
-      <v-layout class="fill-height" column tag="v-list">
-        <v-list-tile avatar to="/">
+    <v-img
+      :src="image"
+      height="100%"
+    >
+      <v-layout
+        class="fill-height"
+        column
+        tag="v-list"
+      >
+        <v-list-tile
+          avatar
+          to="/"
+        >
           <v-list-tile-avatar>
-            <v-img :src="logo"/>
+            <v-img :src="logo" />
           </v-list-tile-avatar>
           <v-list-tile-title class="title">Thous&Apps</v-list-tile-title>
         </v-list-tile>
@@ -32,9 +42,12 @@
             <v-list-tile-action>
               <v-icon>{{ link.icon }}</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title v-text="link.text"/>
+            <v-list-tile-title v-text="link.text" />
           </v-list-tile>
-          <v-divider v-else-if="link.divider" :key="i"/>
+          <v-divider
+            v-else-if="link.divider"
+            :key="i"
+          />
           <v-subheader
             v-else-if="link.header"
             :key="link.header"
@@ -47,7 +60,7 @@
 </template>
 
 <script>
-import Logo from "@/static/icon_origin.png";
+import Logo from "@/static/icon.png";
 import sidebarImage from "@/static/sidebar1.jpg";
 
 export default {
