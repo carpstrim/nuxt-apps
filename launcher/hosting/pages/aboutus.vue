@@ -120,6 +120,7 @@
 <script>
 import hocLogo from "@/static/hoclogo.png";
 import abuIcon from "@/static/abu.jpg";
+import yasumiIcon from "@/static/node.jpeg";
 import twitterIcon from "@/assets/twitter.png";
 export default {
   data() {
@@ -130,7 +131,7 @@ export default {
       subtitle: "weekly apps developer",
       blocks: [
         {
-          img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          img: yasumiIcon,
           title: "のーど",
           subtitle: "HOC 副代表",
           texts: ["アプリ千本ノックの発起人。"]
