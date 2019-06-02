@@ -4,7 +4,7 @@
     id="app"
     style="text-align:center"
   >
-    <h3>カルテ</h3>
+    <h3>マイドキュメント</h3>
     <v-btn
       outline
       color="secondary"
@@ -15,7 +15,7 @@
       color="info"
       @click="createKarte();dialog=true"
     >
-      新規カルテ
+      新規ドキュメント
     </v-btn>
 
     <!--/* Karte List  */ -->
@@ -25,33 +25,44 @@
         wrap
       >
         <v-flex
-          xs12
-          sm6
+          xs6
+          sm4
+          md3
           v-for="(k,i) in karte"
           :key="i"
           class="pa-1"
         >
-          <v-card
-            @click="targetIdx=i;dialog=true"
-            raised
-          >
-            <v-layout
-              justify-space-between
-              row
-              align-center
-              style="height:10vmax"
-              class="pa-4"
-            >
-              <v-avatar
-                size="8vmax"
-                class="elevation-6"
+          <v-context-menu :items="contextMenus(i)">
+            <v-card @click="targetIdx=i;dialog=true">
+              <v-list
+                v-for="(item,j) in items.slice(0,5)"
+                :key="item.label"
+                class="pa-0"
               >
-                <img :src="k[summaryLabel.img]" />
-              </v-avatar>
-              <h4>{{k[summaryLabel.text]}}</h4>
-              <h4>{{k[summaryLabel.select]}}</h4>
-            </v-layout>
-          </v-card>
+                <v-img
+                  v-if="item.type==='image'"
+                  :src="k[item.label]"
+                  aspect-ratio="1"
+                />
+                <v-list-tile
+                  v-else
+                  style="height:40px"
+                >
+                  <v-list-tile-content>
+                    <component :is="j===0?'v-list-tile-title':'v-list-tile-sub-title'">
+                      <span
+                        v-if="typeof(k[item.label])==='object'"
+                        class="text-xs-left"
+                      >
+                        {{Object.keys(k[item.label]).map(textKey=>k[item.label][textKey]).reduce((p,c)=>p+" "+c) }}
+                      </span>
+                      <span v-else> {{filter(k,item)}}</span>
+                    </component>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </v-list>
+            </v-card>
+          </v-context-menu>
         </v-flex>
       </v-layout>
     </v-container>
@@ -60,7 +71,7 @@
       v-model="dialog"
       max-width="700px"
     >
-      <v-card>
+      <v-card v-if="dialog">
         <v-container>
           <v-layout
             wrap
@@ -72,15 +83,17 @@
               :key="i"
             >
               <v-divider></v-divider>
+              <v-subheader>{{item.label}}</v-subheader>
               <component
                 style="margin:0 auto;"
-                :is="templateItems[item.type].tag"
+                :is="item.tag"
                 :label="item.label"
                 v-model="karte[targetIdx][item.label]"
                 :items="item.items"
                 :fileChangedCallback="item.fileChanged"
                 outline
                 color="primary"
+                :birthday="item.birthday"
               />
             </v-flex>
           </v-layout>
@@ -90,16 +103,45 @@
               color="info"
               outline
               @click="dialog=false"
-            >閉じる</v-btn>
+            >保存</v-btn>
           </v-layout>
         </v-container>
       </v-card>
     </v-dialog>
 
+    <!-- delete snackbar -->
+    <v-snackbar
+      :timeout="0"
+      v-model="snackbar"
+      bottom
+      multi-line
+    >
+      消去しました。
+      <v-layout justify-end>
+        <div>
+          <v-btn
+            color="warning"
+            @click="restoreKarte();snackbar=false"
+          >
+            元に戻す
+          </v-btn>
+          <v-btn
+            color="white"
+            @click="snackbar=false"
+            flat
+          >
+            閉じる
+          </v-btn>
+        </div>
+      </v-layout>
+    </v-snackbar>
+
   </div>
 </template>
 
 <script>
+const _ = require("lodash");
+
 export default {
   asyncData({ redirect }) {
     const items = JSON.parse(localStorage.getItem("karte-template"));
@@ -108,49 +150,17 @@ export default {
       return;
     }
     let karte = JSON.parse(localStorage.getItem("karte")) || [{}];
-    const idx = items.map((item, i) => ({ ...item, idx: i }));
-    const getKarteSummary = type => {
-      return idx.filter(i => i.type === type).map(item => item.label);
-    };
-    return {
-      items,
-      karte,
-      summaryLabel: {
-        img: getKarteSummary("image")[0],
-        select: getKarteSummary("select")[0],
-        text: getKarteSummary("text")[0]
-      }
-    };
+    const labels = items.map(item => item.label);
+    karte = karte.map(k => _.pick(k, labels));
+    return { items, karte };
   },
+  layout: "plain",
   data: () => ({
     dialog: false,
     targetIdx: 0,
-    templateItems: {
-      text: {
-        tag: "v-text-field",
-        label: "text field",
-        hasOptions: false,
-        icon: "mdi-format-text"
-      },
-      select: {
-        tag: "v-select",
-        label: "select",
-        hasOptions: true,
-        icon: "mdi-checkbox-multiple-marked-outline"
-      },
-      textArea: {
-        tag: "v-textarea",
-        label: "text area",
-        hasOptions: false,
-        icon: "mdi-format-align-justify"
-      },
-      image: {
-        tag: "v-image-upload",
-        label: "image upload",
-        hasOptions: false,
-        icon: "mdi-image"
-      }
-    }
+    karteDeleted: {},
+    karteDeletedIdx: null,
+    snackbar: false
   }),
   mounted() {
     this.items = this.items.map(item => {
@@ -165,23 +175,67 @@ export default {
     console.table(this.items);
     console.table(this.karte);
   },
-  computed: {},
+  computed: {
+    templateTypes() {
+      let result = {};
+      for (let { label, type } of this.items) {
+        result[label] = type;
+      }
+      return result;
+    }
+  },
   methods: {
     createKarte() {
       this.karte.unshift({});
       this.targetIdx = 0;
+    },
+    filter(karte, item) {
+      const data = karte[item.label];
+      if (item.type === "birthday") {
+        const age = Math.floor(
+          (Date.now() - new Date(data).getTime()) / 1000 / 60 / 60 / 24 / 365
+        );
+        if (!data) return "- (-)歳";
+        return `${data} (${age})歳`;
+      }
+      return data || "-";
+    },
+    contextMenus(i) {
+      return [
+        {
+          title: "消去",
+          onClick: () => {
+            this.karteDeleted = this.karte.splice(i, 1);
+            this.karteDeletedIdx = i;
+            this.snackbar = true;
+          }
+        }
+      ];
+    },
+    restoreKarte() {
+      const foot = this.karte.splice(this.karteDeletedIdx);
+      this.karte = [...this.karte, ...this.karteDeleted, ...foot];
     }
   },
   watch: {
+    karte(val) {
+      saveKarte(val);
+    },
     dialog(val) {
       if (!val) {
-        localStorage.setItem("karte", JSON.stringify(this.karte));
-        console.log("karte saved");
-        console.table(this.karte);
+        this.karte = this.karte.filter(karte => {
+          return Object.keys(karte).some(label => karte[label]);
+        });
+        saveKarte(this.karte);
       }
     }
   }
 };
+function saveKarte(karte) {
+  localStorage.setItem("karte", JSON.stringify(karte));
+  console.log("karte saved");
+  console.table(karte);
+}
 </script>
 
 <style>
