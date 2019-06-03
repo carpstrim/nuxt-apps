@@ -79,8 +79,13 @@ export default {
   asyncData({ redirect, route: { fullPath } }) {
     const items = JSON.parse(localStorage.getItem("karte-template"));
     if (!items) {
-      const last = fullPath.split("/").pop();
-      redirect(fullPath.replace(`/${last}`, "/template"));
+      const path =
+        fullPath
+          .split("/")
+          .filter((s, i) => i === 0 || s)
+          .slice(0, -1)
+          .reduce((p, c) => p + "/" + c) + "/template";
+      redirect(path);
       return;
     }
     let karte = JSON.parse(localStorage.getItem("karte")) || [{}];

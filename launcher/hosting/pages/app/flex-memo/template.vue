@@ -236,7 +236,13 @@ export default {
       ) {
         return;
       }
-      this.$router.push("memo");
+      const path =
+        this.$route.fullPath
+          .split("/")
+          .filter((s, i) => i === 0 || s)
+          .slice(0, -1)
+          .reduce((p, c) => p + "/" + c) + "/memo";
+      this.$router.push(path);
     }
   },
   watch: {}
