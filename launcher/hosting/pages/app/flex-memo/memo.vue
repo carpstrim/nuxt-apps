@@ -2,7 +2,7 @@
 <template>
   <div id="app" style="text-align:center">
     <h3>マイドキュメント</h3>
-    <v-btn outline color="secondary" to="template">テンプレート作成</v-btn>
+    <v-btn outline color="secondary" to="/app/flex-memo/template">テンプレート作成</v-btn>
     <v-btn color="info" @click="createKarte();dialog=true">新規ドキュメント</v-btn>
 
     <!--/* Karte List  */ -->
