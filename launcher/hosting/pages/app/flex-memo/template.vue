@@ -3,52 +3,26 @@
   <div id="app">
     <div style="text-align:center">
       <h3>テンプレート作成</h3>
-      <v-btn
-        outline
-        color="secondary"
-        @click="gotoKarte"
-      >ドキュメント一覧
-      </v-btn>
-      <v-btn
-        @click="fixKarte()"
-        color="primary"
-      >更新</v-btn>
+      <v-btn outline color="secondary" @click="gotoKarte">ドキュメント一覧</v-btn>
+      <v-btn @click="fixKarte()" color="primary">更新</v-btn>
     </div>
-    <v-snackbar
-      :timeout="2000"
-      v-model="fixedKarte"
-      top
-      right
-    >
-      テンプレートを更新しました。
-    </v-snackbar>
+    <v-snackbar :timeout="2000" v-model="fixedKarte" top right>テンプレートを更新しました。</v-snackbar>
 
     <v-container>
-      <v-layout
-        wrap
-        row
-        justify-center
-      >
+      <v-layout wrap row justify-center>
         <draggable
           v-model="items"
-          animation=200
+          animation="200"
           handle=".handle"
           style="width:100%"
           @remove="removeItem"
         >
-          <v-flex
-            xs12
-            v-for="(item,i) in items"
-            :key="i"
-          >
+          <v-flex xs12 v-for="(item,i) in items" :key="i">
             <v-context-menu :items="contextMenus(i)">
               <v-card class="card">
                 <v-container>
                   <v-layout wrap>
-                    <v-flex
-                      xs12
-                      class="handle"
-                    >
+                    <v-flex xs12 class="handle">
                       <div style="width:60%">
                         <v-select
                           :prepend-icon="templateItems[item.type].icon"
@@ -60,19 +34,11 @@
                       <v-icon>mdi-cursor-move</v-icon>
                     </v-flex>
                     <v-flex xs12>
-                      <v-text-field
-                        v-model="item.label"
-                        label="ラベル名を入れてください"
-                      />
+                      <v-text-field v-model="item.label" label="ラベル名を入れてください"/>
                     </v-flex>
                     <v-flex xs12>
                       <div v-if="templateItems[item.type].hasOptions">
-                        <v-combobox
-                          v-model="item.items"
-                          label="選択肢を記入してください"
-                          chips
-                          multiple
-                        >
+                        <v-combobox v-model="item.items" label="選択肢を記入してください" chips multiple>
                           <template v-slot:selection="data">
                             <v-chip
                               :selected="data.selected"
@@ -91,20 +57,9 @@
                           <v-subheader>プレビューを見る</v-subheader>
                         </template>
                         <v-container fluid>
-                          <v-layout
-                            wrap
-                            width="80%"
-                          >
-                            <v-flex
-                              xs12
-                              class="preview-center"
-                            >
-                            </v-flex>
-                            <v-flex
-                              xs12
-                              class="preview-center"
-                              style="width:80px"
-                            >
+                          <v-layout wrap width="80%">
+                            <v-flex xs12 class="preview-center"></v-flex>
+                            <v-flex xs12 class="preview-center" style="width:80px">
                               <component
                                 :is="templateItems[item.type].tag"
                                 :label="item.label||'(ラベル名)'"
@@ -119,7 +74,6 @@
                         </v-container>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
-
                   </v-layout>
                 </v-container>
               </v-card>
@@ -128,50 +82,26 @@
         </draggable>
 
         <v-flex xs12>
-          <div
-            class="create-item"
-            @click="createItem"
-          >
-            <v-icon left>mdi-plus-circle</v-icon>
-            Add New Item
+          <div class="create-item" @click="createItem">
+            <v-icon left>mdi-plus-circle</v-icon>Add New Item
           </div>
         </v-flex>
-
       </v-layout>
-
     </v-container>
 
     <!-- Delete Dialog -->
-    <v-dialog
-      v-model="dialog"
-      class="card"
-      width="20vw"
-    >
+    <v-dialog v-model="dialog" class="card" width="20vw">
       <v-card>
-        <v-card-title>
-          消去しますか？
-        </v-card-title>
+        <v-card-title>消去しますか？</v-card-title>
         <div style="display:flex;justify-content:flex-end;">
-          <v-btn
-            color="info"
-            @click="removeItem();dialog=false;"
-          >
-            消去
-          </v-btn>
-          <v-btn
-            @click="dialog=false"
-            flat
-            color="secondary"
-          >キャンセル</v-btn>
+          <v-btn color="info" @click="removeItem();dialog=false;">消去</v-btn>
+          <v-btn @click="dialog=false" flat color="secondary">キャンセル</v-btn>
         </div>
       </v-card>
     </v-dialog>
 
     <!-- unFixed Dialog -->
-    <v-dialog
-      v-model="unFixedKarte"
-      max-width="290"
-    >
+    <v-dialog v-model="unFixedKarte" max-width="290">
       <v-card>
         <v-card-text>
           同一名前のラベルが存在します。
@@ -180,14 +110,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            flat
-            outline
-            @click="unFixedKarte = false"
-          >
-            閉じる
-          </v-btn>
+          <v-btn color="error" flat outline @click="unFixedKarte = false">閉じる</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -313,7 +236,7 @@ export default {
       ) {
         return;
       }
-      this.$router.push("karte");
+      this.$router.push("memo");
     }
   },
   watch: {}
