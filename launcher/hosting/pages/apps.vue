@@ -138,6 +138,15 @@ export default {
           _createdAt: "2019-05-26",
           toApp: "https://line.me/R/ti/p/%40lhl7924a",
           toBlog: "https://app-senbonknock.com/memorus/"
+        },
+        {
+          name: "カスタマイズ可能！自分だけのメモ帳アプリ",
+          description:
+            "画像アップロードやカレンダーなどのフレームを自由にカスタマイズできるアプリ！TODOメモや簡易電子カルテ、予約台帳など様々な用途に使えます",
+          urlThumbnail: require("@/static/thumb/flexmemo.jpg"),
+          _createdAt: "2019-06-03",
+          toApp: "/app/flex-memo/memo",
+          toBlog: "https://app-senbonknock.com/flexmemo/"
         }
       ],
       limitProjects: 20,
