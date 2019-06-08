@@ -56,11 +56,13 @@ module.exports = {
       }
     ],
     script: [
+      /*
       { src: 'https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js' },
       {
         src: 'https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js'
       },
       { src: 'https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js' }
+      */
     ]
   },
 
@@ -115,6 +117,8 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      config.node = { fs: 'empty' }
+    }
   }
 }
