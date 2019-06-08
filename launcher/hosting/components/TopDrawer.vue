@@ -9,21 +9,11 @@
     :mobile-break-point="breakPoint"
     width="260"
   >
-    <v-img
-      :src="image"
-      height="100%"
-    >
-      <v-layout
-        class="fill-height"
-        column
-        tag="v-list"
-      >
-        <v-list-tile
-          avatar
-          to="/"
-        >
+    <v-img :src="image" height="100%">
+      <v-layout class="fill-height" column tag="v-list">
+        <v-list-tile avatar to="/">
           <v-list-tile-avatar>
-            <v-img :src="logo" />
+            <v-img :src="logo"/>
           </v-list-tile-avatar>
           <v-list-tile-title class="title">Thous&Apps</v-list-tile-title>
         </v-list-tile>
@@ -42,12 +32,9 @@
             <v-list-tile-action>
               <v-icon>{{ link.icon }}</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title v-text="link.text" />
+            <v-list-tile-title v-text="link.text"/>
           </v-list-tile>
-          <v-divider
-            v-else-if="link.divider"
-            :key="i"
-          />
+          <v-divider v-else-if="link.divider" :key="i"/>
           <v-subheader
             v-else-if="link.header"
             :key="link.header"
@@ -67,10 +54,13 @@ export default {
   data: () => ({
     dialog: false,
     image: sidebarImage,
-    logo: Logo,
-    drawer: false
+    logo: Logo
   }),
   props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
     breakPoint: {
       type: String,
       default: "900"
@@ -87,12 +77,16 @@ export default {
     }
   },
   mounted() {
-    this.drawer = screen.width > this.breakPoint ? true : false;
+    //    this.drawer = screen.width > this.breakPoint ? true : false;
   },
-  computed: {},
-  methods: {
-    switch() {
-      this.drawer = !this.drawer;
+  computed: {
+    drawer: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
     }
   }
 };
