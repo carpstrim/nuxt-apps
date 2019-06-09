@@ -1,19 +1,50 @@
 
 <template>
-  <div id="app" style="text-align:center">
+  <div
+    id="app"
+    style="text-align:center"
+  >
     <h3>マイドキュメント</h3>
-    <v-btn outline color="secondary" to="/app/flex-memo/template">テンプレート作成</v-btn>
-    <v-btn color="info" @click="createKarte();dialog=true">新規ドキュメント</v-btn>
+    <v-btn
+      outline
+      color="secondary"
+      to="/app/flex-memo/template"
+    >テンプレート作成</v-btn>
+    <v-btn
+      color="info"
+      @click="createKarte();dialog=true"
+    >新規ドキュメント</v-btn>
 
     <!--/* Karte List  */ -->
     <v-container>
-      <v-layout row wrap>
-        <v-flex xs6 sm4 md3 v-for="(k,i) in karte" :key="i" class="pa-1">
+      <v-layout
+        row
+        wrap
+      >
+        <v-flex
+          xs6
+          sm4
+          md3
+          v-for="(k,i) in karte"
+          :key="i"
+          class="pa-1"
+        >
           <v-context-menu :items="contextMenus(i)">
             <v-card @click="targetIdx=i;dialog=true">
-              <v-list v-for="(item,j) in items.slice(0,5)" :key="item.label" class="pa-0">
-                <v-img v-if="item.type==='image'" :src="k[item.label]" aspect-ratio="1"/>
-                <v-list-tile v-else style="height:40px">
+              <v-list
+                v-for="(item,j) in items.slice(0,5)"
+                :key="item.label"
+                class="pa-0"
+              >
+                <v-img
+                  v-if="item.type==='image'"
+                  :src="k[item.label]"
+                  aspect-ratio="1"
+                />
+                <v-list-tile
+                  v-else
+                  style="height:40px"
+                >
                   <v-list-tile-content>
                     <component :is="j===0?'v-list-tile-title':'v-list-tile-sub-title'">
                       <span
@@ -31,11 +62,21 @@
       </v-layout>
     </v-container>
     <!--/* DIALOG  */ -->
-    <v-dialog v-model="dialog" max-width="700px">
+    <v-dialog
+      v-model="dialog"
+      max-width="700px"
+    >
       <v-card v-if="dialog">
         <v-container>
-          <v-layout wrap row>
-            <v-flex xs12 v-for="(item,i) in items" :key="i">
+          <v-layout
+            wrap
+            row
+          >
+            <v-flex
+              xs12
+              v-for="(item,i) in items"
+              :key="i"
+            >
               <v-divider></v-divider>
               <v-subheader>{{item.label}}</v-subheader>
               <component
@@ -53,19 +94,35 @@
           </v-layout>
           <v-divider></v-divider>
           <v-layout justify-end>
-            <v-btn color="info" outline @click="dialog=false">保存</v-btn>
+            <v-btn
+              color="info"
+              outline
+              @click="dialog=false"
+            >保存</v-btn>
           </v-layout>
         </v-container>
       </v-card>
     </v-dialog>
 
     <!-- delete snackbar -->
-    <v-snackbar :timeout="0" v-model="snackbar" bottom multi-line>
+    <v-snackbar
+      :timeout="0"
+      v-model="snackbar"
+      bottom
+      multi-line
+    >
       消去しました。
       <v-layout justify-end>
         <div>
-          <v-btn color="warning" @click="restoreKarte();snackbar=false">元に戻す</v-btn>
-          <v-btn color="white" @click="snackbar=false" flat>閉じる</v-btn>
+          <v-btn
+            color="warning"
+            @click="restoreKarte();snackbar=false"
+          >元に戻す</v-btn>
+          <v-btn
+            color="white"
+            @click="snackbar=false"
+            flat
+          >閉じる</v-btn>
         </div>
       </v-layout>
     </v-snackbar>
@@ -88,10 +145,10 @@ export default {
       redirect(path);
       return;
     }
-    let karte = JSON.parse(localStorage.getItem("karte")) || [{}];
+    let karte = JSON.parse(localStorage.getItem("karte")) || [];
     const labels = items.map(item => item.label);
     karte = karte.map(k => _.pick(k, labels));
-    console.table(karte);
+    //console.table(karte);
     return { items, karte };
   },
   layout: "plain",
@@ -112,8 +169,8 @@ export default {
         }
       };
     });
-    console.table(this.items);
-    console.table(this.karte);
+    //console.table(this.items);
+    //console.table(this.karte);
   },
   computed: {
     templateTypes() {
@@ -173,8 +230,8 @@ export default {
 };
 function saveKarte(karte) {
   localStorage.setItem("karte", JSON.stringify(karte));
-  console.log("karte saved");
-  console.table(karte);
+  //.log("karte saved");
+  //console.table(karte);
 }
 </script>
 

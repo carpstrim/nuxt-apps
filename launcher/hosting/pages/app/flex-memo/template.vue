@@ -287,7 +287,7 @@ export default {
         return;
       }
       this.fixedKarte = true;
-      console.table(this.items);
+      //console.table(this.items);
       localStorage.setItem("karte-template", JSON.stringify(this.items));
     },
     gotoKarte() {
