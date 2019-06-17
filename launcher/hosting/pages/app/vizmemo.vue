@@ -1,5 +1,8 @@
 <template>
   <div class="ma-4">
+    <v-layout>
+      <h4>powered by <a href="http://www.graphviz.org/" target="_blank">GraphViz</a>. To learn more, see <a href="https://github.com/mdaines/viz.js" target="_blank">GitHub repository</a>.</h4>
+    </v-layout>
     <v-layout justify-end>
       <v-btn
         flat
@@ -115,6 +118,43 @@
 import Viz from "viz.js";
 import { Module, render } from "viz.js/full.render.js";
 let viz = new Viz({ Module, render });
+import _ from "lodash";
+
+/** 普通にURLComponentにencodeしても、firebase shortenでリダイレクトされたときにエスケープ文字がエスケープされないので、フロント側で変換をかける */
+const transform = () => {
+  const escapes = {
+    "#": "_{sharp}_",
+    $: "_{dollar}_",
+    "&": "_{and}_",
+    ",": "_{commma}_",
+    "/": "_{slash}_",
+    ":": "_{colon}_",
+    ";": "_{samicolon}_",
+    "=": "_{equal}_",
+    "?": "_{question}_",
+    "@": "_{att}_",
+    "+": "_{plus}_"
+  };
+  const trans = (text, escapes) => {
+    for (let before in escapes) {
+      const reg = new RegExp("\\" + before, "g");
+      const after = escapes[before];
+      text = text.replace(reg, after);
+    }
+    return text;
+  };
+
+  return {
+    text2URI: text => {
+      return trans(text, escapes);
+    },
+    URI2Text: urlComponent => {
+      return trans(urlComponent, _.invert(escapes));
+    }
+  };
+};
+
+const t = transform();
 
 export default {
   asyncData({ query, redirect, from }) {
@@ -127,7 +167,7 @@ export default {
     } = from;
     const vizText =
       viztext || localStorage.getItem("vizText") || "digraph{\na->b\n}";
-    return { text: vizText };
+    return { text: t.URI2Text(vizText) };
   },
   data() {
     return {
@@ -187,9 +227,8 @@ export default {
         btoa(unescape(encodeURIComponent(svgData)));
     },
     getShareURL() {
-      const url = `${window.location.href}?viztext=${encodeURIComponent(
-        this.text
-      )}`;
+      const urlComponent = encodeURIComponent(t.text2URI(this.text));
+      const url = `${window.location.href}?viztext=${urlComponent}`;
       this.gettingURL = true;
       this.$shortenUrl(url)
         .then(url => {

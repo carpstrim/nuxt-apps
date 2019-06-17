@@ -154,9 +154,17 @@ export default {
           description:
             "日付と都道府県名を入力すると、イベントが掲載されているサイトから該当するイベント情報を取得し、最大10個表示してくれるLINEアプリです。LINEに友達登録するだけですぐに利用を開始することができます。",
           urlThumbnail: require("@/static/thumb/eventsuggestbot.jpg"),
-          _createdAt: "2019-05-26",
+          _createdAt: "2019-06-10",
           toApp: "https://line.me/R/ti/p/%40ads0186o",
           toBlog: "https://app-senbonknock.com/eventsuggestbot/"
+        },
+        {
+          name: "ブラウザで簡単作図＆共有！ GraphVizメモ",
+          description: "相関図などの作図が簡単にできるGraphVizのメモ帳です",
+          urlThumbnail: require("@/static/thumb/vizmemo.jpg"),
+          _createdAt: "2019-06-17",
+          toApp: "/app/vizmemo",
+          toBlog: "https://app-senbonknock.com/vizmemo/"
         }
       ],
       limitProjects: 20,
