@@ -1,19 +1,48 @@
 <template>
   <div class="ma-4">
+    <v-layout>
+      <h4>powered by <a href="http://www.graphviz.org/" target="_blank">GraphViz</a>. To learn more, see <a href="https://github.com/mdaines/viz.js" target="_blank">GitHub repository</a>.</h4>
+    </v-layout>
     <v-layout justify-end>
-      <v-btn flat color="info" @click="text=transform(text)">
+      <v-btn
+        flat
+        color="info"
+        @click="text=transform(text)"
+      >
         <v-icon left>mdi-auto-fix</v-icon>auto fix
       </v-btn>
 
       <!-- Download Menu-->
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn flat color="info" v-on="on">
-            <v-icon left>mdi-download</v-icon>download
+          <v-btn
+            flat
+            color="info"
+            v-on="on"
+            :loading="gettingURL"
+          >
+            <v-icon
+              left
+              v-if="!gettingURL"
+            >mdi-download</v-icon>
+            download
+            <template v-slot:loader>
+              <v-progress-circular
+                indeterminate
+                size=18
+                color="primary"
+                class="mr-1"
+              ></v-progress-circular>
+              <span>loading ...</span>
+            </template>
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile v-for="(item, index) in items" :key="index" @click="item.onclick">
+          <v-list-tile
+            v-for="(item, index) in items"
+            :key="index"
+            @click="item.onclick"
+          >
             <v-list-tile-title>
               <v-layout align-center>
                 <v-icon class="mr-2">{{item.icon}}</v-icon>
@@ -26,19 +55,58 @@
     </v-layout>
 
     <!-- viz area -->
-    <v-layout row wrap>
-      <v-flex xs12 sm3 class="textarea">
-        <v-textarea v-model="text" height="100%" background-color outline label="input area"/>
+    <v-layout
+      row
+      wrap
+    >
+      <v-flex
+        xs12
+        sm3
+        class="textarea"
+      >
+        <v-textarea
+          v-model="text"
+          height="100%"
+          background-color
+          outline
+          label="input area"
+        />
       </v-flex>
-      <v-flex xs12 sm9 class="vizarea">
-        <div id="viz"/>
+      <v-flex
+        xs12
+        sm9
+        class="vizarea"
+      >
+        <div id="viz" />
       </v-flex>
     </v-layout>
 
     <!--snackbar-->
-    <v-snackbar v-model="snackbar" multi-line :timeout="3000" top right>
-      Share URL Copied!
-      <v-btn color="warning" flat @click="snackbar = false">Close</v-btn>
+    <v-snackbar
+      v-model="snackbar"
+      multi-line
+      :timeout="3000"
+      top
+      :color="snackbarType"
+      right
+    >
+      <span
+        v-if="snackbarType==='success'"
+        style="color='green'"
+      >
+        Share URL successfully copied!
+      </span>
+      <span
+        v-if="snackbarType==='error'"
+        style="color='error'"
+      >
+        Share URL Generation Error... Please try again later.
+      </span>
+      <v-btn
+        color="white"
+        flat
+        @click="snackbar = false"
+      >Close</v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -50,6 +118,43 @@
 import Viz from "viz.js";
 import { Module, render } from "viz.js/full.render.js";
 let viz = new Viz({ Module, render });
+import _ from "lodash";
+
+/** 普通にURLComponentにencodeしても、firebase shortenでリダイレクトされたときにエスケープ文字がエスケープされないので、フロント側で変換をかける */
+const transform = () => {
+  const escapes = {
+    "#": "_{sharp}_",
+    $: "_{dollar}_",
+    "&": "_{and}_",
+    ",": "_{commma}_",
+    "/": "_{slash}_",
+    ":": "_{colon}_",
+    ";": "_{samicolon}_",
+    "=": "_{equal}_",
+    "?": "_{question}_",
+    "@": "_{att}_",
+    "+": "_{plus}_"
+  };
+  const trans = (text, escapes) => {
+    for (let before in escapes) {
+      const reg = new RegExp("\\" + before, "g");
+      const after = escapes[before];
+      text = text.replace(reg, after);
+    }
+    return text;
+  };
+
+  return {
+    text2URI: text => {
+      return trans(text, escapes);
+    },
+    URI2Text: urlComponent => {
+      return trans(urlComponent, _.invert(escapes));
+    }
+  };
+};
+
+const t = transform();
 
 export default {
   asyncData({ query, redirect, from }) {
@@ -62,12 +167,14 @@ export default {
     } = from;
     const vizText =
       viztext || localStorage.getItem("vizText") || "digraph{\na->b\n}";
-    return { text: vizText };
+    return { text: t.URI2Text(vizText) };
   },
   data() {
     return {
       snackbar: false,
       compile: null,
+      snackbarType: "success",
+      gettingURL: false,
       items: [
         { title: "image (.png)", icon: "mdi-image", onclick: this.download },
         { title: "share link", icon: "mdi-link", onclick: this.getShareURL }
@@ -120,16 +227,27 @@ export default {
         btoa(unescape(encodeURIComponent(svgData)));
     },
     getShareURL() {
-      const url = `${window.location.href}?viztext=${encodeURIComponent(
-        this.text
-      )}`;
-      let clipboard = document.createElement(`textarea`);
-      clipboard.value = url;
-      document.body.appendChild(clipboard);
-      clipboard.select();
-      document.execCommand("copy");
-      clipboard.parentElement.removeChild(clipboard);
-      this.snackbar = true;
+      const urlComponent = encodeURIComponent(t.text2URI(this.text));
+      const url = `${window.location.href}?viztext=${urlComponent}`;
+      this.gettingURL = true;
+      this.$shortenUrl(url)
+        .then(url => {
+          let clipboard = document.createElement(`textarea`);
+          clipboard.value = url;
+          document.body.appendChild(clipboard);
+          clipboard.select();
+          document.execCommand("copy");
+          clipboard.parentElement.removeChild(clipboard);
+          this.snackbarType = "success";
+          this.snackbar = true;
+        })
+        .catch(e => {
+          this.snackbarType = "error";
+          this.snackbar = true;
+        })
+        .finally(() => {
+          this.gettingURL = false;
+        });
     },
     renderViz(vizText) {
       viz
