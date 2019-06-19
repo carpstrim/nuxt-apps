@@ -1,7 +1,13 @@
 <template>
   <div class="ma-4">
     <v-layout>
-      <h4>powered by <a href="http://www.graphviz.org/" target="_blank">GraphViz</a>. To learn more, see <a href="https://github.com/mdaines/viz.js" target="_blank">GitHub repository</a>.</h4>
+      <h4>powered by <a
+          href="http://www.graphviz.org/"
+          target="_blank"
+        >GraphViz</a>. To learn more, see <a
+          href="https://github.com/mdaines/viz.js"
+          target="_blank"
+        >GitHub repository</a>.</h4>
     </v-layout>
     <v-layout justify-end>
       <v-btn
@@ -306,5 +312,10 @@ svg {
 }
 #viz {
   overflow: scroll;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
