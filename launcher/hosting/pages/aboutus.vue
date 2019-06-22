@@ -120,7 +120,7 @@
 <script>
 import hocLogo from "@/static/hoclogo.png";
 import abuIcon from "@/static/abu.jpg";
-import yasumiIcon from "@/static/node.jpeg";
+import yasumiIcon from "@/static/yasumi.jpg";
 import twitterIcon from "@/assets/twitter.png";
 export default {
   data() {
