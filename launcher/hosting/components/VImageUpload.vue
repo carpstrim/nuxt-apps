@@ -44,11 +44,22 @@ export default {
     fileChangedCallback: {
       default: undefined,
       type: Function
+    },
+    value: {
+      type: "",
+      type: String
     }
   },
-  data: () => ({
-    thumbUrl: ""
-  }),
+  computed: {
+    thumbUrl: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   methods: {
     async fileChanged(file) {
       if (!file) return;

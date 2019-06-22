@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <top-drawer ref="drawer" :links="links"/>
-    <top-bar :drawerFnc="switchDrawer"/>
+    <top-drawer v-model="drawer" :links="links"/>
+    <top-bar :drawerFnc="()=>{drawer=!drawer}"/>
     <top-view/>
   </v-app>
 </template>
@@ -26,7 +26,7 @@ export default {
     return {
       search: null,
       val: null,
-      drawer: true,
+      drawer: false,
       fixed: false,
       searchIdx: [],
       links: [
@@ -69,11 +69,6 @@ export default {
   watch: {
     search(val) {
       console.log(val);
-    }
-  },
-  methods: {
-    switchDrawer() {
-      this.$refs.drawer.switch();
     }
   }
 };

@@ -1,8 +1,37 @@
 const pkg = require('./package')
 
+/*
+const components = () => {
+  const fs = require('fs')
+  const $path = require('path')
+  function getPaths(dirPath) {
+    return fs.readdirSync(dirPath)
+  }
+  function getFiles(pathDir, include = '') {
+    const paths = getPaths(pathDir)
+    let files = []
+    for (let path of paths) {
+      path = `${pathDir}/${path}`
+      const stat = fs.statSync(path)
+
+      if (stat.isFile() && path.indexOf(include) >= 0) {
+        const name = $path.basename(path, '.vue')
+        files.push({ name, path: path.replace('.', '@') })
+      }
+      if (stat.isDirectory()) files = files.concat(getFiles(path))
+    }
+    return files
+  }
+  const components = getFiles('./components', '.vue')
+//  console.log({ components })
+  return components
+}
+*/
+
 module.exports = {
   mode: 'spa',
 
+  //  env: { components: components() },
   /*
    ** Headers of the page
    */
@@ -27,11 +56,13 @@ module.exports = {
       }
     ],
     script: [
+      /*
       { src: 'https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js' },
       {
         src: 'https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js'
       },
       { src: 'https://www.gstatic.com/firebasejs/5.11.1/firebase-auth.js' }
+      */
     ]
   },
 
@@ -86,6 +117,8 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      config.node = { fs: 'empty' }
+    }
   }
 }

@@ -13,7 +13,7 @@
       >
         <v-card>
           <v-img
-            src="/icon_origin.jpg"
+            src="/top.png"
             aspect-ratio="1"
           />
           <v-card-text>

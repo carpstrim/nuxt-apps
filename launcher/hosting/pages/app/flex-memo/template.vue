@@ -2,15 +2,14 @@
 <template>
   <div id="app">
     <div style="text-align:center">
-      <h3>カルテ テンプレート作成</h3>
+      <h3>テンプレート作成</h3>
       <v-btn
         outline
         color="secondary"
         @click="gotoKarte"
-      >カルテ一覧
-      </v-btn>
+      >ドキュメント一覧</v-btn>
       <v-btn
-        @click="fixKarte();fixedKarte=true;"
+        @click="fixKarte()"
         color="primary"
       >更新</v-btn>
     </div>
@@ -19,9 +18,7 @@
       v-model="fixedKarte"
       top
       right
-    >
-      カルテテンプレートを更新しました。
-    </v-snackbar>
+    >テンプレートを更新しました。</v-snackbar>
 
     <v-container>
       <v-layout
@@ -31,7 +28,7 @@
       >
         <draggable
           v-model="items"
-          animation=200
+          animation="200"
           handle=".handle"
           style="width:100%"
           @remove="removeItem"
@@ -47,7 +44,7 @@
                   <v-layout wrap>
                     <v-flex
                       xs12
-                      class="handle"
+                      class="top-tile"
                     >
                       <div style="width:60%">
                         <v-select
@@ -57,7 +54,7 @@
                           v-model="item.type"
                         />
                       </div>
-                      <v-icon>mdi-cursor-move</v-icon>
+                      <v-icon class="handle">mdi-cursor-move</v-icon>
                     </v-flex>
                     <v-flex xs12>
                       <v-text-field
@@ -98,9 +95,7 @@
                             <v-flex
                               xs12
                               class="preview-center"
-                            >
-                              <v-subheader>{{item.label||"{ラベル名}"}}</v-subheader>
-                            </v-flex>
+                            ></v-flex>
                             <v-flex
                               xs12
                               class="preview-center"
@@ -108,18 +103,18 @@
                             >
                               <component
                                 :is="templateItems[item.type].tag"
-                                :label="templateItems[item.type].label"
+                                :label="item.label||'(ラベル名)'"
                                 :items="item.items"
                                 :fileChangedCallback="item.fileChanged"
                                 outline
                                 color="primary"
+                                :birthday="templateItems[item.type].birthday"
                               />
                             </v-flex>
                           </v-layout>
                         </v-container>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
-
                   </v-layout>
                 </v-container>
               </v-card>
@@ -132,31 +127,25 @@
             class="create-item"
             @click="createItem"
           >
-            <v-icon left>mdi-plus-circle</v-icon>
-            Add New Item
+            <v-icon left>mdi-plus-circle</v-icon>Add New Item
           </div>
         </v-flex>
-
       </v-layout>
-
     </v-container>
 
+    <!-- Delete Dialog -->
     <v-dialog
       v-model="dialog"
       class="card"
-      width="20vw"
+      max-width="300px"
     >
       <v-card>
-        <v-card-title>
-          消去しますか？
-        </v-card-title>
+        <v-card-title>消去しますか？</v-card-title>
         <div style="display:flex;justify-content:flex-end;">
           <v-btn
             color="info"
             @click="removeItem();dialog=false;"
-          >
-            消去
-          </v-btn>
+          >消去</v-btn>
           <v-btn
             @click="dialog=false"
             flat
@@ -165,53 +154,88 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <!-- unFixed Dialog -->
+    <v-dialog
+      v-model="unFixedKarte"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-text>
+          同一名前のラベルが存在します。
+          ドキュメント項目のラベルは一意である必要があります。
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            flat
+            outline
+            @click="unFixedKarte = false"
+          >閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import draggable from "vuedraggable";
+const defaultItems = [
+  { type: "text", label: "タイトル" },
+  { type: "image", label: "サムネイル" },
+  { type: "select", label: "タグ", items: ["メモ", "TODO"] },
+  { type: "date", label: "日時" },
+  { type: "textArea", label: "本文" }
+];
 export default {
   components: { draggable },
   asyncData() {
     return {
-      items: JSON.parse(localStorage.getItem("karte-template")) || [
-        { type: "text", label: "hogehoge" },
-        { type: "select", label: "fugafuga", items: ["1"] },
-        {
-          type: "image",
-          label: "image",
-          fileChanged: async e => {}
-        }
-      ]
+      items: JSON.parse(localStorage.getItem("karte-template")) || defaultItems
     };
   },
   data: () => ({
     fixedKarte: false,
+    unFixedKarte: false,
     dialog: false,
     templateItems: {
       text: {
         tag: "v-text-field",
-        label: "text field",
         hasOptions: false,
         icon: "mdi-format-text"
       },
       select: {
         tag: "v-select",
-        label: "select",
         hasOptions: true,
         icon: "mdi-checkbox-multiple-marked-outline"
       },
       textArea: {
         tag: "v-textarea",
-        label: "text area",
         hasOptions: false,
         icon: "mdi-format-align-justify"
       },
       image: {
         tag: "v-image-upload",
-        label: "image upload",
         hasOptions: false,
         icon: "mdi-image"
+      },
+      address: {
+        tag: "v-address-form",
+        hasOptions: false,
+        icon: "mdi-map-marker"
+      },
+      date: {
+        tag: "date-picker",
+        hasOptions: false,
+        icon: "mdi-calendar"
+      },
+      birthday: {
+        tag: "date-picker",
+        hasOptions: false,
+        icon: "mdi-calendar",
+        birthday: true
       }
     },
     deletingItemIdx: null
@@ -249,7 +273,21 @@ export default {
       });
     },
     fixKarte() {
-      console.log({ karte: this.items });
+      this.items = this.items.map(item => ({
+        ...item,
+        ...this.templateItems[item.type]
+      }));
+      if (
+        this.items.length !==
+        this.items
+          .map(item => item.label)
+          .filter((e, i, A) => A.indexOf(e) === i).length
+      ) {
+        this.unFixedKarte = true;
+        return;
+      }
+      this.fixedKarte = true;
+      //console.table(this.items);
       localStorage.setItem("karte-template", JSON.stringify(this.items));
     },
     gotoKarte() {
@@ -261,7 +299,13 @@ export default {
       ) {
         return;
       }
-      this.$router.push("karte");
+      const path =
+        this.$route.fullPath
+          .split("/")
+          .filter((s, i) => i === 0 || s)
+          .slice(0, -1)
+          .reduce((p, c) => p + "/" + c) + "/memo";
+      this.$router.push(path);
     }
   },
   watch: {}
@@ -275,7 +319,7 @@ export default {
   justify-content: center;
   margin: 1vh;
 }
-.handle {
+.top-tile {
   display: flex;
   justify-content: space-between;
 }
