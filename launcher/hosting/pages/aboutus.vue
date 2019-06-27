@@ -1,17 +1,7 @@
 <template>
-  <v-container
-    fill-height
-    fluid
-    grid-list-xl
-  >
-    <v-layout
-      justify-center
-      wrap
-    >
-      <v-flex
-        xs12
-        md8
-      >
+  <v-container fill-height fluid grid-list-xl>
+    <v-layout justify-center wrap>
+      <v-flex xs12 md8>
         <material-card color="info">
           <div slot="header">
             <div class="title font-weight-light mb-2">{{ title }}</div>
@@ -60,42 +50,17 @@
             <br>
             <h4>興味がある方はぜひご連絡ください</h4>
             <div style="display:flex">
-              <img
-                style="margin:0 2px"
-                :src="twitterIcon"
-                width="23px"
-              >
-              <a
-                href="https://twitter.com/KnmsStr"
-                target="_blank"
-              >@KnmsStr</a>
+              <img style="margin:0 2px" :src="twitterIcon" width="23px">
+              <a href="https://twitter.com/KnmsStr" target="_blank">@KnmsStr</a>
             </div>
           </v-card-text>
         </material-card>
       </v-flex>
-      <v-flex
-        xs12
-        md4
-      >
-        <v-layout
-          justify-center
-          row
-          wrap
-        >
-          <v-flex
-            xs12
-            v-for="(block,i) in blocks"
-            :key="i"
-          >
-            <material-card
-              class="v-card-profile"
-              style="width:100%"
-            >
-              <v-avatar
-                slot="offset"
-                class="mx-auto d-block"
-                size="130"
-              >
+      <v-flex xs12 md4>
+        <v-layout justify-center row wrap>
+          <v-flex xs12 v-for="(block,i) in blocks" :key="i">
+            <material-card class="v-card-profile" style="width:100%">
+              <v-avatar slot="offset" class="mx-auto d-block" size="130">
                 <img :src="block.img">
               </v-avatar>
               <v-card-text class="text-xs-center">
@@ -120,7 +85,7 @@
 <script>
 import hocLogo from "@/static/hoclogo.png";
 import abuIcon from "@/static/abu.jpg";
-import yasumiIcon from "@/static/yasumi.jpg";
+//import yasumiIcon from "@/static/yasumi.jpg";
 import twitterIcon from "@/assets/twitter.png";
 export default {
   data() {

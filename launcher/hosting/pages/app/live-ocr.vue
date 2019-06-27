@@ -1,18 +1,7 @@
 <template>
-  <v-container
-    fluid
-    grid-list-lg
-    class="container"
-  >
-    <v-layout
-      row
-      wrap
-      justify-center
-    >
-      <div
-        id="e1"
-        style="max-width: 500px; margin: auto;"
-      >
+  <v-container fluid grid-list-lg class="container">
+    <v-layout row wrap justify-center>
+      <div id="e1" style="max-width: 500px; margin: auto;">
         <v-flex xs12>
           <h1 class="title">Live OCR</h1>
         </v-flex>
@@ -26,30 +15,18 @@
           :width="15"
           :value="progress.progress"
           color="teal"
-        >
-          {{ progress.status }}
-        </v-progress-circular>
+        >{{ progress.status }}</v-progress-circular>
       </v-flex>
-      <v-flex
-        xs12
-        justify-center
-      >
-        <v-btn
-          fab
-          dark
-          middle
-          color="primary"
-          @click="isCameraOpen=!isCameraOpen"
-        >
+      <v-flex xs12 justify-center>
+        <v-btn fab dark middle color="primary" @click="isCameraOpen=!isCameraOpen">
           <v-icon>camera_enhance</v-icon>
         </v-btn>
-
       </v-flex>
       <v-flex xs12>
         <camera-reader
           :open="isCameraOpen"
-          width=300
-          height=500
+          width="300"
+          height="500"
           :processor="processor"
           :processInterval="500"
           :pause="pause"
@@ -58,12 +35,7 @@
       </v-flex>
       <v-flex xs12>
         readed
-        <p
-          v-for="text in readed"
-          :key="text"
-        >
-          {{text}}
-        </p>
+        <p v-for="text in readed" :key="text">{{text}}</p>
       </v-flex>
     </v-layout>
   </v-container>
@@ -97,7 +69,7 @@ export default {
     processor(im) {
       const code = null;
       this.pause = true;
-      Tesseract.recognize(im, { lang: "jpn" })
+      Tesseract.recognize(im)
         .progress(({ status, progress }) => {
           this.progresses[status] = progress * 100;
         })
@@ -106,6 +78,12 @@ export default {
             this.progresses[status] = 0;
           }
           console.log("result", result);
+          result.text = result.text.replace(/\W|[a-z]|O/g, "");
+          result.text = result.text
+            .split(" ")
+            .filter(str => str.length === 12)
+            .reduce((p, c) => p + c, "");
+          result.text = ` [ ${result.text} ] ${result.text.length} words`;
           this.readed.unshift(`${Date.now()}:${result.text}`);
           this.pause = false;
         });
