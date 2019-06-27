@@ -1,7 +1,18 @@
 <template>
-  <v-container fluid grid-list-lg class="container">
-    <v-layout row wrap justify-center>
-      <div id="e1" style="max-width: 500px; margin: auto;">
+  <v-container
+    fluid
+    grid-list-lg
+    class="container"
+  >
+    <v-layout
+      row
+      wrap
+      justify-center
+    >
+      <div
+        id="e1"
+        style="max-width: 500px; margin: auto;"
+      >
         <v-flex xs12>
           <h1 class="title">Live OCR</h1>
         </v-flex>
@@ -17,14 +28,34 @@
           color="teal"
         >{{ progress.status }}</v-progress-circular>
       </v-flex>
-      <v-flex xs12 justify-center>
-        <v-btn fab dark middle color="primary" @click="isCameraOpen=!isCameraOpen">
+      <v-flex
+        xs12
+        justify-center
+      >
+        <v-btn
+          fab
+          dark
+          middle
+          color="primary"
+          @click="isCameraOpen=!isCameraOpen"
+        >
           <v-icon>camera_enhance</v-icon>
+        </v-btn>
+        <v-btn
+          fab
+          dark
+          middle
+          color="secondary"
+          v-show="isCameraOpen"
+          @click="switchCamera"
+        >
+          <v-icon>mdi-camera-party-mode</v-icon>
         </v-btn>
       </v-flex>
       <v-flex xs12>
         <camera-reader
           :open="isCameraOpen"
+          :facingMode="facingMode"
           width="300"
           height="500"
           :processor="processor"
@@ -35,7 +66,10 @@
       </v-flex>
       <v-flex xs12>
         readed
-        <p v-for="text in readed" :key="text">{{text}}</p>
+        <p
+          v-for="text in readed"
+          :key="text"
+        >{{text}}</p>
       </v-flex>
     </v-layout>
   </v-container>
@@ -51,6 +85,7 @@ export default {
       isCameraOpen: false,
       readed: [],
       pause: false,
+      facingMode: "environment",
       progresses: {
         "initializing api": 0,
         "recognizing text": 0
@@ -64,6 +99,13 @@ export default {
         progress: this.progresses[status]
       }));
     }
+  },
+  mounted() {
+    /*
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      console.log({ devices });
+    });
+    */
   },
   methods: {
     processor(im) {
@@ -87,6 +129,9 @@ export default {
           this.readed.unshift(`${Date.now()}:${result.text}`);
           this.pause = false;
         });
+    },
+    switchCamera() {
+      this.facingMode = this.facingMode === "user" ? "environment" : "user";
     }
   }
 };
