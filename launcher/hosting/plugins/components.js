@@ -8,6 +8,7 @@ import VImageUpload from '@/components/VImageUpload'
 import VAddressForm from '@/components/VAddressForm'
 import DatePicker from '@/components/DatePicker'
 import CameraReader from '@/components/CameraReader'
+import DataTable from '@/components/DataTable'
 
 Vue.mixin({
   components: {
@@ -18,6 +19,7 @@ Vue.mixin({
     VContextMenu,
     VImageUpload,
     VAddressForm,
-    DatePicker
+    DatePicker,
+    DataTable
   }
 })

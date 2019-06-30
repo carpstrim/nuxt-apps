@@ -38,6 +38,7 @@
         <p v-for="text in readed" :key="text">{{text}}</p>
       </v-flex>
     </v-layout>
+    <data-table v-model="items" :headers="headers"/>
   </v-container>
 </template>
 
@@ -54,7 +55,17 @@ export default {
       progresses: {
         "initializing api": 0,
         "recognizing text": 0
-      }
+      },
+      items: [{ code: "11", label: "hoge" }],
+      headers: [
+        { value: "code", text: "code", sortable: true },
+        { value: "label", text: "品名1", sortable: true },
+        { value: "label2", text: "品名2", sortable: true },
+        { value: "label3", text: "品名3", sortable: true },
+        { value: "label4", text: "品名4", sortable: true },
+        { value: "label5", text: "品名5", sortable: true },
+        { value: "label6", text: "品名6", sortable: true }
+      ]
     };
   },
   computed: {
