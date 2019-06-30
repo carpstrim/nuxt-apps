@@ -30,6 +30,10 @@ export default {
       type: Boolean,
       default: false
     },
+    facingMode: {
+      type: String,
+      default: "user"
+    },
     processor: {
       type: Function,
       default: im => {
@@ -95,7 +99,8 @@ export default {
           video: {
             width: this.width,
             height: this.height,
-            frameRate: { ideal: this.frameRate, max: this.frameRate }
+            frameRate: { ideal: this.frameRate, max: this.frameRate },
+            facingMode: this.facingMode
           }
         })
         .then(mediaStream => {
@@ -134,6 +139,10 @@ export default {
     open(val) {
       if (val) this.cameraStart();
       if (!val) this.cameraStop();
+    },
+    facingMode(val) {
+      this.cameraStop();
+      this.cameraStart();
     }
   }
 };
