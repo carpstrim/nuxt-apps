@@ -165,6 +165,14 @@ export default {
           _createdAt: "2019-06-17",
           toApp: "/app/vizmemo",
           toBlog: "https://app-senbonknock.com/vizmemo/"
+        },
+        {
+          name: "アイデア出しを加速させるかもしれない「ゴリ押し掛け算」",
+          description: "いろんな「掛け算」を表示してビジネスのアイデア出しをサポートするLINEアプリです。",
+          urlThumbnail: require("@/static/thumb/gorioshi-kakezan.jpg"),
+          _createdAt: "2019-06-29",
+          toApp: "http://nav.cx/bMPKvo1",
+          toBlog: "https://app-senbonknock.com/gorioshi-kakezan/"
         }
       ],
       limitProjects: 20,
