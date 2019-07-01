@@ -1,57 +1,110 @@
 <template>
-  <div id="app">
-    <v-app id="inspire">
-      <div>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on }">
-            <div class="justify-space-between align-center layout ma-0" style="width:100%">
-              <h3>title</h3>
-              <v-btn color="primary" dark class="mb-2" v-on="on" round flat outline>New Item</v-btn>
-            </div>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+  <div>
+    <v-dialog
+      v-model="dialog"
+      max-width="500px"
+    >
+      <template v-slot:activator="{ on }">
+        <div
+          class="justify-space-between align-end layout"
+          :style="`width:${width}`"
+          style="margin: 0 auto"
+        >
+          <h4>{{title}}</h4>
+          <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            v-on="on"
+            round
+            flat
+            outline
+            small
+            v-if="creatable"
+          >New Item</v-btn>
+        </div>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ formTitle }}</span>
+        </v-card-title>
 
-            <v-card-text>
-              <v-container grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12 sm6 md4 v-for="header in headers" :key="header.value">
-                    <v-text-field v-model="editedItem[header.value]" :label="header.text"></v-text-field>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex
+                xs12
+                sm6
+                md4
+                v-for="header in headers"
+                :key="header.value"
+              >
+                <v-text-field
+                  v-model="editedItem[header.value]"
+                  :label="header.text"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="secondary" flat @click="close">Cancel</v-btn>
-              <v-btn color="primary" @click="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-data-table :headers="headers" :items="items" class="elevation-1">
-          <template v-slot:items="props">
-            <td
-              class="text-xs-center"
-              v-for="header in headers"
-              :key="header.value"
-            >{{ props.item[header.value] }}</td>
-            <td class="justify-center layout px-0">
-              <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-              <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-            </td>
-          </template>
-        </v-data-table>
-      </div>
-    </v-app>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="secondary"
+            flat
+            @click="close"
+          >Cancel</v-btn>
+          <v-btn
+            color="primary"
+            @click="save"
+          >Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <div
+      :style="`width:${width}`"
+      style="margin:0 auto;"
+    >
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        class="elevation-1"
+      >
+        <template v-slot:items="props">
+          <td
+            class="text-xs-center"
+            v-for="header in headers"
+            :key="header.value"
+          >{{ props.item[header.value] }}</td>
+          <td class="justify-center layout px-0">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(props.item)"
+            >edit</v-icon>
+            <v-icon
+              small
+              @click="deleteItem(props.item)"
+            >delete</v-icon>
+          </td>
+        </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
+    title: {
+      type: String,
+      default: "title"
+    },
+    creatable: {
+      tyle: Boolean,
+      default: true
+    },
     headers: {
       type: Array,
       default: () => [
@@ -70,6 +123,10 @@ export default {
           key: "hoge"
         }
       ]
+    },
+    width: {
+      type: String,
+      default: "100%"
     }
   },
   data: () => ({

@@ -111,6 +111,7 @@ export default {
     },
     cameraStop() {
       this.readerStop();
+      if (!this.mediaStream) return;
       this.mediaStream.getVideoTracks().forEach(track => {
         track.stop();
       });
