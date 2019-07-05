@@ -1,21 +1,7 @@
 <template>
-  <div
-    class="parent"
-    :style="`height:`+height+'px'"
-  >
-    <video
-      style="background-color:grey"
-      class="pos-ab"
-      :width="width"
-      :height="height"
-      autoplay
-    />
-    <canvas
-      id="canvas"
-      class="pos-ab"
-      :width="width"
-      :height="height"
-    ></canvas>
+  <div class="parent" :style="`height:${height}px;width:${width}px`">
+    <video style="background-color:grey" class="pos-ab" :width="width" :height="height" autoplay />
+    <canvas id="canvas" class="pos-ab" :width="width" :height="height"></canvas>
   </div>
 </template>
 
@@ -55,6 +41,9 @@ export default {
     },
     frameRate: {
       default: 10
+    },
+    aspectRatio: {
+      default: 0.5625
     }
   }, //width,height,framerate interval imagefunction
   data() {
@@ -87,6 +76,9 @@ export default {
     ctx.lineWidth = 5;
     ctx.strokeStyle = "rgb(0,0,255)";
     ctx.strokeRect(...this.rectLocation);
+
+    if (this.open) this.cameraStart();
+    if (!this.open) this.cameraStop();
   },
   beforeDestroy() {
     this.cameraStop();
@@ -100,7 +92,8 @@ export default {
             width: this.width,
             height: this.height,
             frameRate: { ideal: this.frameRate, max: this.frameRate },
-            facingMode: this.facingMode
+            facingMode: this.facingMode,
+            aspectRatio: this.aspectRatio
           }
         })
         .then(mediaStream => {
@@ -155,5 +148,10 @@ export default {
 }
 .pos-ab {
   position: absolute;
+}
+video {
+  width: 100%;
+  height: 100%;
+  /*  object-fit: cover;*/
 }
 </style>

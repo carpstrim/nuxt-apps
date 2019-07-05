@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <top-drawer v-model="drawer" :links="links"/>
-    <top-bar :drawerFnc="()=>{drawer=!drawer}"/>
-    <top-view/>
+    <top-drawer v-model="drawer" :links="links" />
+    <top-bar :drawerFnc="()=>{drawer=!drawer}" />
+    <top-view />
   </v-app>
 </template>
 
@@ -41,16 +41,12 @@ export default {
           icon: "book",
           text: "Blog"
         },
-        { divider: true },
-        /*
-        { header: "Advanced" },
         {
-          to: "/specials",
-          icon: "star",
-          text: "Specials"
+          to: "/dev",
+          icon: "mdi-wrench",
+          text: "Under Development"
         },
         { divider: true },
-        */
         { header: "Credits" },
         {
           to: "/aboutus",

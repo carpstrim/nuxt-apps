@@ -1,59 +1,33 @@
 <template>
   <v-app>
     <nuxt />
-    <div
-      absolute
-      class="inset"
-    >
-      <nuxt-link to="/app/live-ocr/camera">
-        <v-fab-transition>
-          <v-btn
-            :color="cameraColor"
-            class="center-btn"
-            large
-            absolute
-            fab
-          >
-            <v-icon dark>{{pathEnd==='camera'?'mdi-stop':'mdi-camera'}}</v-icon>
-          </v-btn>
-        </v-fab-transition>
-      </nuxt-link>
-      <v-layout>
-        <v-flex
-          xs4
-          class="layout justify-end"
+    <div absolute class="inset">
+      <v-fab-transition>
+        <v-btn
+          :color="camera?'red':'info'"
+          class="center-btn"
+          large
+          absolute
+          fab
+          @click="switchCamera"
         >
-          <nuxt-link
-            to="/app/live-ocr/record"
-            class="v-btn"
-          >
+          <v-icon dark>{{camera?'mdi-stop':'mdi-camera'}}</v-icon>
+        </v-btn>
+      </v-fab-transition>
+      <v-layout>
+        <v-flex xs4 class="layout justify-end">
+          <nuxt-link to="/app/live-ocr/record" class="v-btn">
             <div style="display:flex; flex-direction:column;">
               Record
-              <v-icon
-                large
-                dark
-                :disabled="pathEnd!=='record'"
-              >mdi-clipboard-text</v-icon>
+              <v-icon large dark :disabled="pathEnd!=='record'">mdi-clipboard-text</v-icon>
             </div>
           </nuxt-link>
-
         </v-flex>
-        <v-flex
-          xs4
-          offset-xs4
-          class="layout justify-start"
-        >
-          <nuxt-link
-            to="/app/live-ocr/option"
-            class="v-btn"
-          >
+        <v-flex xs4 offset-xs4 class="layout justify-start">
+          <nuxt-link to="/app/live-ocr/option" class="v-btn">
             <div style="display:flex; flex-direction:column;">
               Option
-              <v-icon
-                large
-                dark
-                :disabled="pathEnd!=='option'"
-              >mdi-settings</v-icon>
+              <v-icon large dark :disabled="pathEnd!=='option'">mdi-settings</v-icon>
             </div>
           </nuxt-link>
         </v-flex>
@@ -62,44 +36,31 @@
   </v-app>
 </template>
 <script>
-const reds = {
-  "$red-100": "#ffcdd2",
-  "$red-200": "#ef9a9a",
-  "$red-300": "#e57373",
-  "$red-400": "#ef5350",
-  "$red-500": "#f44336",
-  "$red-600": "#e53935",
-  "$red-700": "#d32f2f",
-  "$red-800": "#c62828",
-  "$red-900": "#b71c1c"
-};
 export default {
   data() {
     return {
       btnLarge: true,
-      interval: null,
-      cameraColor: this.pathEnd === "camera" ? "red" : "info",
-      red: 100
+      interval: null
     };
   },
   computed: {
     pathEnd() {
       return this.$route.path.split("/").slice(-1)[0];
+    },
+    camera() {
+      return this.$store.state.camera;
     }
   },
   watch: {
     pathEnd(val) {
-      if (val === "camera") {
-        this.interval = setInterval(() => {
-          this.red += 100;
-          if (this.red >= 500) this.red = 300;
-          this.cameraColor = reds[`$red-${this.red}`];
-          console.log("camera running...");
-        }, 300);
-      } else {
-        this.cameraColor = "info";
-        clearInterval(this.interval);
-      }
+      if (val !== "camera") this.$store.commit("stopCamera");
+    }
+  },
+  methods: {
+    switchCamera() {
+      console.log({ camera: this.camera });
+      this.$store.commit("switchCamera");
+      this.$router.push("/app/live-ocr/camera");
     }
   }
 };

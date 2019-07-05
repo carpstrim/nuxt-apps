@@ -1,9 +1,6 @@
 <template>
   <div>
-    <v-dialog
-      v-model="dialog"
-      max-width="500px"
-    >
+    <v-dialog v-model="dialog" max-width="500px">
       <template v-slot:activator="{ on }">
         <div
           class="justify-space-between align-end layout"
@@ -32,17 +29,8 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex
-                xs12
-                sm6
-                md4
-                v-for="header in headers"
-                :key="header.value"
-              >
-                <v-text-field
-                  v-model="editedItem[header.value]"
-                  :label="header.text"
-                ></v-text-field>
+              <v-flex xs12 sm6 md4 v-for="header in headers" :key="header.value">
+                <v-text-field v-model="editedItem[header.value]" :label="header.text"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -50,26 +38,17 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="secondary"
-            flat
-            @click="close"
-          >Cancel</v-btn>
-          <v-btn
-            color="primary"
-            @click="save"
-          >Save</v-btn>
+          <v-btn color="secondary" flat @click="close">Cancel</v-btn>
+          <v-btn color="primary" @click="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <div
-      :style="`width:${width}`"
-      style="margin:0 auto;"
-    >
+    <div :style="`width:${width}`" style="margin:0 auto;">
       <v-data-table
         :headers="headers"
         :items="items"
         class="elevation-1"
+        :rows-per-page-items="[10,25,50,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
       >
         <template v-slot:items="props">
           <td
@@ -78,15 +57,8 @@
             :key="header.value"
           >{{ props.item[header.value] }}</td>
           <td class="justify-center layout px-0">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(props.item)"
-            >edit</v-icon>
-            <v-icon
-              small
-              @click="deleteItem(props.item)"
-            >delete</v-icon>
+            <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
+            <v-icon small @click="deleteItem(props.item)">delete</v-icon>
           </td>
         </template>
       </v-data-table>
@@ -132,8 +104,7 @@ export default {
   data: () => ({
     dialog: false,
     editedIndex: -1,
-    editedItem: {},
-    defaultItem: {}
+    editedItem: {}
   }),
 
   computed: {
@@ -150,15 +121,13 @@ export default {
     }
   },
   mounted() {
-    const [item] = JSON.parse(JSON.stringify(this.value));
-    for (let key in item) {
-      item[key] = "";
+    const keys = this.headers.map(header => header.value);
+    const items = {};
+    for (let key of keys) {
+      items[key] = "";
     }
-    this.editedItem = item;
-    this.defaultItem = item;
-    console.log(this.editedItem);
+    this.editedItem = items;
   },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -168,7 +137,7 @@ export default {
   methods: {
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.editedItem = { ...item };
       this.dialog = true;
     },
 
@@ -180,10 +149,8 @@ export default {
 
     close() {
       this.dialog = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
+      this.editedItem = {};
+      this.editedIndex = -1;
     },
 
     save() {
@@ -192,6 +159,7 @@ export default {
       } else {
         this.items.push(this.editedItem);
       }
+      this.items = this.items.filter(v => Object.keys(v).some(k => v[k]));
       this.close();
     }
   }
