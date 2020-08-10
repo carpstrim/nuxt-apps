@@ -6,10 +6,7 @@
     </div>
 
     <v-container class="pa-2">
-      <v-layout
-        row
-        wrap
-      >
+      <v-layout row wrap>
         <v-flex
           xs4
           sm3
@@ -38,20 +35,12 @@
         </infinite-loading>
       </v-layout>
     </v-container>
-    <v-dialog
-      v-model="dialog"
-      scrollable
-    >
+    <v-dialog v-model="dialog" scrollable>
       <div class="dialog--inside">
         <div class="app--name">{{targetProject.name}}</div>
-        <br>
+        <br />
         <div class="app--description">{{targetProject.description}}</div>
-        <v-img
-          :src="targetProject.urlThumbnail"
-          aspect-ratio="1"
-          width="30vmax"
-          class="mt-5 mb-2"
-        />
+        <v-img :src="targetProject.urlThumbnail" aspect-ratio="1" width="30vmax" class="mt-5 mb-2" />
         <v-btn
           color="info"
           v-if="!isHttp(targetProject.toApp)"
@@ -65,7 +54,7 @@
           target="_blank"
           round
         >LINEアプリ</v-btn>
-        <v-btn
+        <!--<v-btn
           color="white"
           v-if="targetProject.toBlog"
           :href="targetProject.toBlog"
@@ -75,7 +64,7 @@
             small
             right
           >mdi-launch</v-icon>
-        </v-btn>
+        </v-btn>-->
       </div>
     </v-dialog>
   </div>
@@ -111,7 +100,7 @@ export default {
           toApp: "/app/dotmaker",
           toBlog: "https://app-senbonknock.com/dotmaker/"
         },
-        {
+        /*{
           name: "100分の1じゃんけん",
           description:
             "100回に１回しか勝てないじゃんけんに挑戦できるネタアプリです。",
@@ -119,7 +108,7 @@ export default {
           _createdAt: "2019-05-20",
           toApp: "https://line.me/R/ti/p/%40ueb6734r",
           toBlog: "https://app-senbonknock.com/1percentjanken/"
-        },
+        },*/
 
         {
           name: "おしゃれ画像コレクター",
@@ -130,7 +119,7 @@ export default {
           toApp: "/app/imagecollector",
           toBlog: "https://app-senbonknock.com/imagecollector/"
         },
-        {
+        /*{
           name: "匿名型画像投稿アプリ memorus",
           description:
             "LINE+Googleフォトを組み合わせたようなサービス。結婚式やイベントなどで参加者みんなとSNSで繋がったりする必要なく、手軽に写真を共有しあるLINEアプリ",
@@ -138,7 +127,7 @@ export default {
           _createdAt: "2019-05-26",
           toApp: "https://line.me/R/ti/p/%40lhl7924a",
           toBlog: "https://app-senbonknock.com/memorus/"
-        },
+        },*/
         {
           name: "カスタマイズ可能！自分だけのメモ帳アプリ",
           description:
@@ -148,7 +137,7 @@ export default {
           toApp: "/app/flex-memo/memo",
           toBlog: "https://app-senbonknock.com/flexmemo/"
         },
-        {
+        /*{
           name:
             "日付と都道府県を入力するとイベント情報を表示する「イベント提案BOT」",
           description:
@@ -157,23 +146,24 @@ export default {
           _createdAt: "2019-06-10",
           toApp: "https://line.me/R/ti/p/%40ads0186o",
           toBlog: "https://app-senbonknock.com/eventsuggestbot/"
-        },
+        },*/
         {
-          name: "ブラウザで簡単作図＆共有！ GraphVizメモ",
+          name: "ブラウザで簡単作図！ GraphVizメモ",
           description: "相関図などの作図が簡単にできるGraphVizのメモ帳です",
           urlThumbnail: require("@/static/thumb/vizmemo.jpg"),
           _createdAt: "2019-06-17",
           toApp: "/app/vizmemo",
           toBlog: "https://app-senbonknock.com/vizmemo/"
-        },
+        } /*
         {
           name: "アイデア出しを加速させるかもしれない「ゴリ押し掛け算」",
-          description: "いろんな「掛け算」を表示してビジネスのアイデア出しをサポートするLINEアプリです。",
+          description:
+            "いろんな「掛け算」を表示してビジネスのアイデア出しをサポートするLINEアプリです。",
           urlThumbnail: require("@/static/thumb/gorioshi-kakezan.jpg"),
           _createdAt: "2019-06-29",
           toApp: "http://nav.cx/bMPKvo1",
           toBlog: "https://app-senbonknock.com/gorioshi-kakezan/"
-        }
+        }*/
       ],
       limitProjects: 20,
       targetProject: {}

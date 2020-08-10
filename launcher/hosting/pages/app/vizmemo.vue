@@ -1,54 +1,30 @@
 <template>
   <div class="ma-4">
     <v-layout>
-      <h4>powered by <a
-          href="http://www.graphviz.org/"
-          target="_blank"
-        >GraphViz</a>. To learn more, see <a
-          href="https://github.com/mdaines/viz.js"
-          target="_blank"
-        >GitHub repository</a>.</h4>
+      <h4>
+        powered by
+        <a href="http://www.graphviz.org/" target="_blank">GraphViz</a>. To learn more, see
+        <a href="https://github.com/mdaines/viz.js" target="_blank">GitHub repository</a>.
+      </h4>
     </v-layout>
     <v-layout justify-end>
-      <v-btn
-        flat
-        color="info"
-        @click="text=transform(text)"
-      >
+      <v-btn flat color="info" @click="text=transform(text)">
         <v-icon left>mdi-auto-fix</v-icon>auto fix
       </v-btn>
 
       <!-- Download Menu-->
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn
-            flat
-            color="info"
-            v-on="on"
-            :loading="gettingURL"
-          >
-            <v-icon
-              left
-              v-if="!gettingURL"
-            >mdi-download</v-icon>
-            download
+          <v-btn flat color="info" v-on="on" :loading="gettingURL">
+            <v-icon left v-if="!gettingURL">mdi-download</v-icon>download
             <template v-slot:loader>
-              <v-progress-circular
-                indeterminate
-                size=18
-                color="primary"
-                class="mr-1"
-              ></v-progress-circular>
+              <v-progress-circular indeterminate size="18" color="primary" class="mr-1"></v-progress-circular>
               <span>loading ...</span>
             </template>
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile
-            v-for="(item, index) in items"
-            :key="index"
-            @click="item.onclick"
-          >
+          <v-list-tile v-for="(item, index) in items" :key="index" @click="item.onclick">
             <v-list-tile-title>
               <v-layout align-center>
                 <v-icon class="mr-2">{{item.icon}}</v-icon>
@@ -61,58 +37,23 @@
     </v-layout>
 
     <!-- viz area -->
-    <v-layout
-      row
-      wrap
-    >
-      <v-flex
-        xs12
-        sm3
-        class="textarea"
-      >
-        <v-textarea
-          v-model="text"
-          height="100%"
-          background-color
-          outline
-          label="input area"
-        />
+    <v-layout row wrap>
+      <v-flex xs12 sm3 class="textarea">
+        <v-textarea v-model="text" height="100%" background-color outline label="input area" />
       </v-flex>
-      <v-flex
-        xs12
-        sm9
-        class="vizarea"
-      >
+      <v-flex xs12 sm9 class="vizarea">
         <div id="viz" />
       </v-flex>
     </v-layout>
 
     <!--snackbar-->
-    <v-snackbar
-      v-model="snackbar"
-      multi-line
-      :timeout="3000"
-      top
-      :color="snackbarType"
-      right
-    >
-      <span
-        v-if="snackbarType==='success'"
-        style="color='green'"
-      >
-        Share URL successfully copied!
-      </span>
+    <v-snackbar v-model="snackbar" multi-line :timeout="3000" top :color="snackbarType" right>
+      <span v-if="snackbarType==='success'" style="color='green'">Share URL successfully copied!</span>
       <span
         v-if="snackbarType==='error'"
         style="color='error'"
-      >
-        Share URL Generation Error... Please try again later.
-      </span>
-      <v-btn
-        color="white"
-        flat
-        @click="snackbar = false"
-      >Close</v-btn>
+      >Share URL Generation Error... Please try again later.</span>
+      <v-btn color="white" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -182,8 +123,8 @@ export default {
       snackbarType: "success",
       gettingURL: false,
       items: [
-        { title: "image (.png)", icon: "mdi-image", onclick: this.download },
-        { title: "share link", icon: "mdi-link", onclick: this.getShareURL }
+        { title: "image (.png)", icon: "mdi-image", onclick: this.download }
+        //{ title: "share link", icon: "mdi-link", onclick: this.getShareURL }
       ]
     };
   },

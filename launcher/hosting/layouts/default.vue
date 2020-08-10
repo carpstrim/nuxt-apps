@@ -1,8 +1,9 @@
 <template>
   <v-app>
-    <top-drawer v-model="drawer" :links="links" />
+    <!--<top-drawer v-model="drawer" :links="links" />
     <top-bar :drawerFnc="()=>{drawer=!drawer}" />
-    <top-view />
+    <top-view />-->
+    <nuxt />
   </v-app>
 </template>
 
@@ -36,23 +37,8 @@ export default {
           icon: "apps",
           text: "Apps"
         },
-        {
-          href: "https://app-senbonknock.com/",
-          icon: "book",
-          text: "Blog"
-        },
-        {
-          to: "/dev",
-          icon: "mdi-wrench",
-          text: "Under Development"
-        },
         { divider: true },
         { header: "Credits" },
-        {
-          to: "/aboutus",
-          icon: "supervisor_account",
-          text: "About us"
-        },
         {
           to: "/thanks",
           icon: "favorite",

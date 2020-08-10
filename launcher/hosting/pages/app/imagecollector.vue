@@ -2,21 +2,14 @@
 <template>
   <div id="app">
     <div style="text-align:center">
-      <h3>おしゃれ画像コレクター</h3>
+      <h3>画像コレクター</h3>
     </div>
     <v-container>
-      <v-layout
-        wrap
-        row
-        justify-center
-      >
+      <v-layout wrap row justify-center>
         <v-flex xs12>
           <v-subheader>Search</v-subheader>
         </v-flex>
-        <v-flex
-          xs10
-          sm11
-        >
+        <v-flex xs10 sm11>
           <v-text-field
             label="type keyword"
             placeholder="ex. nature, flower"
@@ -31,28 +24,15 @@
           sm1
           style="display:flex;align-items:start;justify-content:center;padding-left:1vw;"
         >
-          <v-btn
-            color="info"
-            icon
-            round
-            :loading="loading"
-            @click="search"
-          >
+          <v-btn color="info" icon round :loading="loading" @click="search">
             <v-icon>search</v-icon>
           </v-btn>
         </v-flex>
         <v-flex xs12>
-          <v-progress-linear
-            v-show="loading"
-            indeterminate
-          />
+          <v-progress-linear v-show="loading" indeterminate />
         </v-flex>
 
-        <v-layout
-          wrap
-          row
-          justify-center
-        >
+        <v-layout wrap row justify-center>
           <v-flex
             xs4
             sm3
@@ -63,35 +43,18 @@
           >
             <div class="thumbs">
               <v-card class="card">
-                <img
-                  :id="url"
-                  :src="url"
-                  @click="getDataUrl(url)"
-                />
+                <img :id="url" :src="url" @click="getDataUrl(url)" />
               </v-card>
             </div>
           </v-flex>
         </v-layout>
       </v-layout>
-
     </v-container>
 
-    <v-snackbar
-      v-model="snackbar"
-      multi-line
-      :timeout="3000"
-      top
-    >
+    <v-snackbar v-model="snackbar" multi-line :timeout="3000" top>
       画像アドレスをコピーしました
-      <v-btn
-        color="warning"
-        flat
-        @click="snackbar = false"
-      >
-        Close
-      </v-btn>
+      <v-btn color="warning" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
-
   </div>
 </template>
 
